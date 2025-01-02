@@ -59,7 +59,8 @@ p {
   font-family: "merriweatherlight", serif;
 }
 
-textarea {
+textarea, .textarea {
+  letter-spacing: 0px;
   font-size: 20px;
   font-family: "merriweatherlight", serif;
   border: none;
@@ -72,6 +73,10 @@ textarea {
   overflow-y: auto;
   word-wrap: break-word;
   position: absolute;
+  margin: 0
+}
+textarea {
+  pointer-events: none;
 }
 .translated-text {
   padding: 20px 0;
@@ -79,7 +84,7 @@ textarea {
   font-family: "merriweatherlight", serif;
 }
 
-textarea:focus {
+.textarea:focus, textarea:focus {
   border-color: none;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -130,4 +135,11 @@ footer {
   align-items: center;
   justify-content: center;
   padding-top: 40px;
+}
+
+.highlight {
+  background: 'red'
+}
+.selected {
+  background: 'green'
 }

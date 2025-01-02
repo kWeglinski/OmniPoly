@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import "./App.css";
-import { useDebounce } from "./useDebounce";
+import { useDebounce } from "../common/useDebounce";
 import { AUTOMATIC, getFromLS, justLangData, withHistory } from "./utils";
-import { Footer } from "./Footer";
+import { Footer } from "../common/Footer";
 import { Settings } from "./Settings";
 import { API } from "./API";
 import { TransBox } from "./TransBox";
-import { theme } from "./Theme";
+import { theme } from "../common/Theme";
 import { Lang, LangChoice, TranslationResponse } from "./types";
 
 function App() {

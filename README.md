@@ -1,6 +1,10 @@
+# NEW:
+
+Support for language tool has been added!
+
 # Pole LibreTranslate Frontend
 
-This is a frontend app that uses LibreTranslate as a backend.
+This is a frontend app that uses LibreTranslate and LanguageTool as a backend.
 
 I didn't like the fact that original app that comes with libre translate doesn't remember my previous language choices therefore I've decided to make my own frontend. That also allows me to clean it up visually.
 
@@ -18,6 +22,7 @@ Here's a sample docker compose:
   pole-libretranslate:
     restart: unless-stopped
     environment:
+      LTAPI: https://your.languagetool.instance
       API: https://your.libretranslate.instance
       # pick one of: 'pole' | 'light' | 'dark' 
       THEME: 'dark'
@@ -32,7 +37,7 @@ this is a standard Vite setup. Simply run: `npm run install` and then `npm run d
 
 Or
 
-Use url param `localhost:5173/?api=https://your.api.instance`
+Use url param `localhost:5173/?api=https://your.api.instance&lturl=https://your.languagetool.instance`
 
 ## React + TypeScript + Vite
 

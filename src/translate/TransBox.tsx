@@ -1,7 +1,7 @@
 import { Divider, Stack } from "@mui/material";
 import { Source } from "./Source";
 import { Translation } from "./Translation";
-import { useWindowSize } from "./useWindowSize";
+import { useWindowSize } from "../common/useWindowSize";
 import { AUTOMATIC } from "./utils";
 import { Lang, LangChoice, TranslationResponse } from "./types";
 

@@ -1,5 +1,5 @@
 import { Chip } from "@mui/material";
-import { useWindowSize } from "./useWindowSize";
+import { useWindowSize } from "../common/useWindowSize";
 import { Lang } from "./types";
 
 export const PrevChoices = ({

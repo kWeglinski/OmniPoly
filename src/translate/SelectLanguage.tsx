@@ -1,7 +1,7 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import { useWindowSize } from "./useWindowSize";
+import { useWindowSize } from "../common/useWindowSize";
 import { Lang, LangChoice } from "./types";
 
 export const SelectLanguage = ({
