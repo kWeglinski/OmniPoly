@@ -64,7 +64,7 @@ export const Switcher = () => {
         <Tabs
           centered
           value={tab}
-          onChange={(e, val) => setTab(val)}
+          onChange={(_, val) => setTab(val)}
           aria-label="basic tabs example"
         >
           {hasLibreTanslate() && <Tab label="Translate" {...a11yProps(0)} />}
