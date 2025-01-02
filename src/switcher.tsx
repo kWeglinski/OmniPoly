@@ -43,7 +43,7 @@ const hasLangTool = () => {
     //@ts-expect-error: window
     languageCheckerUrl ?? window._lturl;
 
-  return !!baseUrl;
+  return baseUrl !== "%LTAPI%";
 };
 
 const hasLibreTanslate = () => {
@@ -53,18 +53,24 @@ const hasLibreTanslate = () => {
   //@ts-expect-error: window
   const baseUrl = libreUrl ?? window._libreurl;
 
-  return !!baseUrl;
+  return baseUrl !== "%API%";
 };
 
 export const Switcher = () => {
-  const [tab, setTab] = useState(1);
+  const initTab = parseInt(localStorage.getItem("tab") ?? "0");
+  const [tab, setTab] = useState(initTab);
+  const tabSetter = (val: number) => {
+    setTab(val);
+    localStorage.setItem("tab", val.toString());
+  };
+
   return (
     <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           centered
           value={tab}
-          onChange={(_, val) => setTab(val)}
+          onChange={(_, val) => tabSetter(val)}
           aria-label="basic tabs example"
         >
           {hasLibreTanslate() && <Tab label="Translate" {...a11yProps(0)} />}

@@ -25,7 +25,7 @@ export const Footer = () => {
           </p>
           {showDivider && <Divider orientation="vertical" flexItem />}
           <p>
-            {`API by: `}
+            {`Translate API by: `}
             <Link
               href="https://github.com/LibreTranslate/LibreTranslate/graphs/contributors"
               rel="noopener noreferrer"
@@ -45,6 +45,14 @@ export const Footer = () => {
               Argos Translate
             </Link>
           </p>
+        </Stack>
+        <Stack sx={{ paddingTop: '10px', justifyContent: "center", alignItems: "center" }}>
+          <img
+            src="/favicon/apple-touch-icon.png"
+            alt="logo"
+            width="25px"
+            style={{ margin: "auto" }}
+          />
         </Stack>
       </div>
     </footer>

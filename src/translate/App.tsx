@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { CssBaseline, ThemeProvider } from "@mui/material";
 import "./App.css";
 import { useDebounce } from "../common/useDebounce";
 import { AUTOMATIC, getFromLS, justLangData, withHistory } from "./utils";
-import { Footer } from "../common/Footer";
 import { Settings } from "./Settings";
 import { API } from "./API";
 import { TransBox } from "./TransBox";
-import { theme } from "../common/Theme";
 import { Lang, LangChoice, TranslationResponse } from "./types";
 
 function App() {
@@ -75,32 +72,26 @@ function App() {
     withHistory("source", setSource)(justLangData(prevTarget));
     withHistory("target", setTarget)(justLangData(prevSource));
   };
-  //@ts-expect-error window object
-  const themeOption = window._theme;
 
   return (
-    <ThemeProvider theme={theme(themeOption)}>
-      <CssBaseline />
-      <div className="layout">
-        <Settings
-          swapLangs={swapLangs}
-          languages={languages}
-          source={source}
-          setSource={setSource}
-          target={target}
-          setTarget={setTarget}
-        />
+    <>
+      <Settings
+        swapLangs={swapLangs}
+        languages={languages}
+        source={source}
+        setSource={setSource}
+        target={target}
+        setTarget={setTarget}
+      />
 
-        <TransBox
-          question={question}
-          questionSetter={questionSetter}
-          source={source}
-          languages={languages}
-          answer={answer}
-        />
-        <Footer />
-      </div>
-    </ThemeProvider>
+      <TransBox
+        question={question}
+        questionSetter={questionSetter}
+        source={source}
+        languages={languages}
+        answer={answer}
+      />
+    </>
   );
 }
 

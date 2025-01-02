@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { CssBaseline, Divider, Stack, ThemeProvider } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 import "./App.css";
-import { Footer } from "../common/Footer";
-import { theme } from "../common/Theme";
 import { useDebounce } from "../common/useDebounce";
 import { TextBox } from "./Text";
 import { useWindowSize } from "../common/useWindowSize";
@@ -18,8 +16,9 @@ function App() {
   const q = useDebounce(question, 1000) as string;
 
   const questionSetter = useCallback((text: string) => {
-    localStorage.setItem("question", text);
-    setQuestion(text);
+    const standarisedQuestion = text.replace(/\t/g, "    ");
+    localStorage.setItem("question", standarisedQuestion);
+    setQuestion(standarisedQuestion);
   }, []);
   const check = useCallback((text: string) => {
     if (!text) {
@@ -45,6 +44,14 @@ function App() {
     setAnswer(newAnswer);
   };
 
+  // const addWord = useCallback((word: string) => {
+  //   API()
+  //     .addToDict(word)
+  //     .then(() => {
+  //       check(q);
+  //     });
+  // }, []);
+
   useEffect(() => {
     if (q.length > 1) {
       check(q);
@@ -52,42 +59,35 @@ function App() {
     }
   }, [q, check]);
 
-  //@ts-expect-error window object
-  const themeOption = window._theme;
   const [windowWidth] = useWindowSize();
 
   return (
-    <ThemeProvider theme={theme(themeOption)}>
-      <CssBaseline />
-      <div className="layout">
-        <Stack
-          direction={windowWidth > 800 ? "row" : "column"}
-          className="translation"
-        >
-          <div>
-            <TextBox
-              question={question}
-              setQuestion={questionSetter}
-              highlights={answer}
-              selection={selection}
-              setSelection={setSelection}
-            />
-          </div>
-          <Divider orientation="vertical" flexItem />
-          <div style={{ position: "relative" }}>
-            <Resolution
-              selection={selection}
-              setSelection={setSelection}
-              info={answer}
-              original={q}
-              setQuestion={setQuestion}
-              popAnswer={popAnswer}
-            />
-          </div>
-        </Stack>
-        <Footer />
+    <Stack
+      direction={windowWidth > 800 ? "row" : "column"}
+      className="translation"
+    >
+      <div>
+        <TextBox
+          question={question}
+          setQuestion={questionSetter}
+          highlights={answer}
+          selection={selection}
+          setSelection={setSelection}
+        />
       </div>
-    </ThemeProvider>
+      <Divider orientation="vertical" flexItem />
+      <div style={{ position: "relative" }}>
+        <Resolution
+          // addWord={addWord}
+          selection={selection}
+          setSelection={setSelection}
+          info={answer}
+          original={q}
+          setQuestion={questionSetter}
+          popAnswer={popAnswer}
+        />
+      </div>
+    </Stack>
   );
 }
 

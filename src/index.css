@@ -76,6 +76,7 @@ textarea, .textarea {
   margin: 0
 }
 .textarea {
+  white-space: pre-wrap;
   color: transparent;
 }
 .translated-text {

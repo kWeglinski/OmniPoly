@@ -5,7 +5,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Alert,
 } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { LanguageToolResponse, Match } from "./API";
 
@@ -22,12 +24,19 @@ const DisplayMatch = ({
   selected,
   setSelection,
   idx,
+  // addWord,
+  original,
 }: Match & {
   fix: Fix;
   selected: boolean;
   setSelection: () => void;
   idx: number;
+  original: string;
 }) => {
+  const fixPos = (value: string) => {
+    const nCount = original.substring(0, offset).match(/\n/g)?.length ?? 0;
+    fix(offset + nCount, length, value, idx);
+  };
   return (
     <Accordion expanded={selected}>
       <AccordionSummary
@@ -55,10 +64,28 @@ const DisplayMatch = ({
           <Chip
             size="small"
             label={repl.value}
-            onClick={() => fix(offset, length, repl.value, idx)}
+            onClick={() => fixPos(repl.value)}
             sx={{ marginRight: 1, marginBottom: 0.5, marginTop: 0.5 }}
           />
         ))}
+        {/* {rule.category.id === "TYPOS" && (
+          <>
+            <Divider sx={{ mt: 2, mb: 2 }} />
+            <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
+              <Button
+                startIcon={<LibraryBooksOutlinedIcon />}
+                size="small"
+                variant="outlined"
+                sx={{ margin: "auto" }}
+                onClick={() =>
+                  addWord(context.text.substr(context.offset, context.length))
+                }
+              >
+                Add To Dictionary
+              </Button>
+            </Stack>
+          </>
+        )} */}
       </AccordionDetails>
     </Accordion>
   );
@@ -71,6 +98,7 @@ export const Resolution = ({
   selection,
   setSelection,
   popAnswer,
+  // addWord,
 }: {
   info: LanguageToolResponse | null;
   original: string;
@@ -91,6 +119,11 @@ export const Resolution = ({
   };
   return (
     <div>
+      {info.matches.length === 0 && (
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          All good!
+        </Alert>
+      )}
       {info.matches.map((data, i) => (
         <DisplayMatch
           key={i}
@@ -99,6 +132,8 @@ export const Resolution = ({
           selected={selection === i}
           setSelection={() => setSelection(i)}
           idx={i}
+          original={original}
+          // addWord={addWord}
         />
       ))}
     </div>

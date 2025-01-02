@@ -19,9 +19,11 @@ const HighlightText = ({
   for (let i = 0; i < highlights.length; i++) {
     const { offset, length } = highlights[i];
 
+    const nCount = text.substring(0, offset).match(/\n/g)?.length ?? 0;
+    const nOffset = nCount;
     if (offset > lastIndex) {
       // Add the text before the current highlight
-      renderedHighlights.push(text.substring(lastIndex, offset));
+      renderedHighlights.push(text.substring(lastIndex, offset + nOffset));
     }
 
     // Wrap the highlighted segment with a <span> tag
@@ -33,13 +35,13 @@ const HighlightText = ({
         }}
         onClick={() => setSelection(i)}
       >
-        {text.substring(offset, offset + length)}
+        {text.substring(nOffset + offset, nOffset + offset + length)}
       </span>
     );
     renderedHighlights.push(highlightedText);
 
     // Update lastIndex to the end of the current highlight
-    lastIndex = offset + length;
+    lastIndex = offset + length + nOffset;
   }
 
   // Add any remaining text after the last highlight
@@ -86,6 +88,8 @@ export const TextBox = ({
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           style={{ position: "absolute", top: 0, left: 0 }}
+          //@ts-expect-error: this is needed
+          spellcheck="false"
         >
           {question}
         </textarea>

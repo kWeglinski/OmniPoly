@@ -86,10 +86,7 @@ export const API = () => {
   const languageCheckerUrl = urlParams.get("ltapi");
 
   function fixedEncodeURIComponent(str: string) {
-    return str
-    // return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
-    //   return '%' + c.charCodeAt(0).toString(16);
-    // });
+    return str;
   }
 
   const baseUrl =
@@ -97,10 +94,8 @@ export const API = () => {
     languageCheckerUrl ?? window._lturl ?? "http://localhost:5000";
 
   const getChecked = (text: string) => {
-    const queryParams = { language: "auto", text: fixedEncodeURIComponent(text) };
-    const queryString = new URLSearchParams(queryParams).toString();
     return fetch(
-      `${baseUrl}/v2/check?language=auto&text=${queryString}`,
+      `${baseUrl}/v2/check?language=auto&text=${fixedEncodeURIComponent(text)}`,
       {
         method: "GET",
       }
@@ -109,7 +104,37 @@ export const API = () => {
     });
   };
 
+  const addToDict = (word: string) => {
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    };
+
+    // Define the form data
+    const formData = new URLSearchParams();
+    formData.append("word", word);
+    formData.append("username", "test");
+
+    // Make the POST request using fetch
+    fetch(`${baseUrl}/v2/words/add`, {
+      method: "POST",
+      headers: headers,
+      body: formData.toString(),
+    })
+      .then((response) => response.json()) // Parse the JSON response
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  // fetch(`${baseUrl}/v2/words/add?word=${fixedEncodeURIComponent(word)}`, {
+  //   method: "POST",
+  // }).then(() => {});
+
   return {
     getChecked,
+    addToDict,
   };
 };
