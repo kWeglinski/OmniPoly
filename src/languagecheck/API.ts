@@ -93,6 +93,7 @@ export const API = () => {
       method: "POST",
       body: JSON.stringify({
         text: text,
+        language: 'auto'
       }),
       headers: { "Content-Type": "application/json" },
     }).then((data) => {
