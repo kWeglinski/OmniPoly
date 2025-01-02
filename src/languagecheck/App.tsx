@@ -17,6 +17,10 @@ function App() {
   const [answer, setAnswer] = useState<LanguageToolResponse | null>(null);
   const q = useDebounce(question, 1000) as string;
 
+  const questionSetter = useCallback((text: string) => {
+    localStorage.setItem("question", text);
+    setQuestion(text);
+  }, []);
   const check = useCallback((text: string) => {
     if (!text) {
       return;
@@ -63,7 +67,7 @@ function App() {
           <div>
             <TextBox
               question={question}
-              setQuestion={setQuestion}
+              setQuestion={questionSetter}
               highlights={answer}
               selection={selection}
               setSelection={setSelection}

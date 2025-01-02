@@ -72,13 +72,23 @@ export const TextBox = ({
     <>
       <div className="autosize" data-replicated-value={question}>
         <HighlightText
-          //@ts-expect-error: event
-          onChange={(e) => setQuestion(e.target.textContent)}
+          onChange={(e) => {
+            //@ts-expect-error: event
+            setQuestion(e.target.textContent);
+          }}
           text={question}
           highlights={highlights?.matches || []}
           selection={selection}
           setSelection={setSelection}
         />
+        <textarea
+          placeholder="Your text here..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          style={{ position: "absolute", top: 0, left: 0 }}
+        >
+          {question}
+        </textarea>
       </div>
     </>
   );

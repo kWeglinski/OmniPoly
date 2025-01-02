@@ -75,6 +75,9 @@ textarea, .textarea {
   position: absolute;
   margin: 0
 }
+.textarea {
+  color: transparent;
+}
 .translated-text {
   padding: 20px 0;
   font-size: 20px;
