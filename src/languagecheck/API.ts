@@ -85,19 +85,25 @@ export const API = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const languageCheckerUrl = urlParams.get("ltapi");
 
+  function fixedEncodeURIComponent(str) {
+    return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
+
   const baseUrl =
     //@ts-expect-error: window
     languageCheckerUrl ?? window._lturl ?? "http://localhost:5000";
 
   const getChecked = (text: string) => {
-    const newForm = new FormData();
-    newForm.append("text", text);
-    newForm.append("language", "auto");
-    return fetch(`${baseUrl}/v2/check`, {
-      method: "POST",
-      body: newForm,
-      // No need to set Content-Type header manually for FormData
-    }).then((data) => {
+    const queryParams = { language: "auto", text: fixedEncodeURIComponent(text) };
+    const queryString = new URLSearchParams(queryParams).toString();
+    return fetch(
+      `${baseUrl}/v2/check?language=auto&text=${queryString}`,
+      {
+        method: "GET",
+      }
+    ).then((data) => {
       return data.json();
     });
   };
