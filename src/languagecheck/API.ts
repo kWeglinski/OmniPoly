@@ -88,14 +88,13 @@ export const API = () => {
   const baseUrl =
     //@ts-expect-error: window
     languageCheckerUrl ?? window._lturl ?? "http://localhost:5000";
+
   const getChecked = (text: string) =>
     fetch(`${baseUrl}/v2/check`, {
       method: "POST",
-      body: JSON.stringify({
-        text: text,
-        language: 'auto'
-      }),
-      headers: { "Content-Type": "application/json" },
+      //@ts-expect-error: it's not void
+      body: new FormData().append("text", text).append("language", "auto"),
+      // No need to set Content-Type header manually for FormData
     }).then((data) => {
       return data.json();
     });
