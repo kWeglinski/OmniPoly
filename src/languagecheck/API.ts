@@ -86,7 +86,7 @@ export const API = () => {
   const languageCheckerUrl = urlParams.get("ltapi");
 
   function fixedEncodeURIComponent(str: string) {
-    return encodeURIComponent(str)
+    return str
     // return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
     //   return '%' + c.charCodeAt(0).toString(16);
     // });
