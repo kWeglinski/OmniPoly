@@ -8,6 +8,7 @@ import { TransBox } from "./TransBox";
 import { Lang, LangChoice, TranslationResponse } from "./types";
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState(
     localStorage.getItem("question") ?? ""
   );
@@ -30,11 +31,13 @@ function App() {
       if (!source || !target) {
         return;
       }
+      setLoading(true);
       API()
         .getTranslation(source, target, text)
         .then((data) => {
           setAnswer(data);
-        });
+        })
+        .finally(() => setLoading(false));
     },
     []
   );
@@ -85,6 +88,7 @@ function App() {
       />
 
       <TransBox
+        loading={loading}
         question={question}
         questionSetter={questionSetter}
         source={source}

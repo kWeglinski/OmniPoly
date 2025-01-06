@@ -1,3 +1,5 @@
+import { LangChoice } from "../translate/types";
+
 export interface LanguageToolResponse {
   software: SoftwareInfo;
   warnings: Warnings;
@@ -85,21 +87,24 @@ export const API = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const languageCheckerUrl = urlParams.get("ltapi");
 
-  function fixedEncodeURIComponent(str: string) {
-    return str;
-  }
-
   const baseUrl =
     //@ts-expect-error: window
     languageCheckerUrl ?? window._lturl ?? "http://localhost:5000";
 
-  const getChecked = (text: string) => {
-    return fetch(
-      `${baseUrl}/v2/check?language=auto&text=${fixedEncodeURIComponent(text)}`,
-      {
-        method: "GET",
-      }
-    ).then((data) => {
+  const getChecked = (text: string, lang: LangChoice) => {
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    };
+
+    const formData = new URLSearchParams();
+    formData.append("text", text);
+    formData.append("language", lang.longCode ?? lang.code);
+    return fetch(`${baseUrl}/v2/check`, {
+      method: "POST",
+      headers: headers,
+      body: formData.toString(),
+    }).then((data) => {
       return data.json();
     });
   };
@@ -133,8 +138,17 @@ export const API = () => {
   //   method: "POST",
   // }).then(() => {});
 
+  const getLangs = () => {
+    return fetch(`${baseUrl}/v2/languages`, {
+      method: "GET",
+    }).then((data) => {
+      return data.json();
+    });
+  };
+
   return {
     getChecked,
     addToDict,
+    getLangs
   };
 };

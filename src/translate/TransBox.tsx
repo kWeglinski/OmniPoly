@@ -1,4 +1,4 @@
-import { Divider, Stack } from "@mui/material";
+import { CircularProgress, Divider, Stack } from "@mui/material";
 import { Source } from "./Source";
 import { Translation } from "./Translation";
 import { useWindowSize } from "../common/useWindowSize";
@@ -11,7 +11,9 @@ export const TransBox = ({
   source,
   languages,
   answer,
+  loading,
 }: {
+  loading: boolean;
   question: string;
   questionSetter: (q: string) => void;
   source: LangChoice;
@@ -38,7 +40,21 @@ export const TransBox = ({
       </div>
       <Divider orientation="vertical" flexItem />
       <div style={{ position: "relative" }}>
-        <Translation answer={answer} />
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress size="3rem" />
+          </div>
+        ) : (
+          <Translation answer={answer} />
+        )}
       </div>
     </Stack>
   );

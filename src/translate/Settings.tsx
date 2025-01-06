@@ -2,7 +2,7 @@ import { Chip, IconButton, Skeleton, Stack } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { useWindowSize } from "../common/useWindowSize";
 import { AUTOMATIC, withHistory } from "./utils";
-import { SelectLanguage } from "./SelectLanguage";
+import { SelectLanguage } from "../common/SelectLanguage";
 import { PrevChoices } from "./PrevChoices";
 import { Lang, LangChoice } from "./types";
 

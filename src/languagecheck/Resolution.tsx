@@ -6,9 +6,11 @@ import {
   AccordionSummary,
   AccordionDetails,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { LanguageToolResponse, Match } from "./API";
 
 type Fix = (start: number, length: number, value: string, idx: number) => void;
@@ -34,7 +36,8 @@ const DisplayMatch = ({
   original: string;
 }) => {
   const fixPos = (value: string) => {
-    const nCount = original.substring(0, offset).match(/\n/g)?.length ?? 0;
+    const nCount =
+      original.substring(0, offset).match(/\\[ntrvf]/g)?.length ?? 0;
     fix(offset + nCount, length, value, idx);
   };
   return (
@@ -92,14 +95,18 @@ const DisplayMatch = ({
 };
 
 export const Resolution = ({
+  error,
   info,
   original,
   setQuestion,
   selection,
   setSelection,
   popAnswer,
-  // addWord,
-}: {
+  loading,
+}: // addWord,
+{
+  error: string;
+  loading: boolean;
   info: LanguageToolResponse | null;
   original: string;
   setQuestion: (t: string) => void;
@@ -107,8 +114,20 @@ export const Resolution = ({
   setSelection: (i: number) => void;
   popAnswer: (i: number) => void;
 }) => {
-  if (!info) {
-    return null;
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress size="3rem" />
+      </div>
+    );
   }
   const fix: Fix = (start, length, value, idx) => {
     const fixed = `${original.substring(0, start)}${value}${original.substring(
@@ -119,12 +138,17 @@ export const Resolution = ({
   };
   return (
     <div>
-      {info.matches.length === 0 && (
+      {error.length > 0 && (
+        <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">
+          {error}
+        </Alert>
+      )}
+      {info?.matches.length === 0 && (
         <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
           All good!
         </Alert>
       )}
-      {info.matches.map((data, i) => (
+      {info?.matches.map((data, i) => (
         <DisplayMatch
           key={i}
           {...data}

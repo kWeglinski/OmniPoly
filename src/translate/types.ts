@@ -2,6 +2,7 @@ export type Lang = {
   code: string;
   name: string;
   targets: string[];
+  longCode?: string;
 };
 
 export type History = {
