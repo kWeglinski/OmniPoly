@@ -137,7 +137,7 @@ export const Resolution = ({
     popAnswer(idx);
   };
   return (
-    <div>
+    <div style={{paddingTop: '20px'}}>
       {error.length > 0 && (
         <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">
           {error}

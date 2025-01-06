@@ -2,14 +2,21 @@
 
 Support for language tool has been added!
 
-# Pole LibreTranslate Frontend
+# Pole Language Frontend
 
 This is a frontend app that uses LibreTranslate and LanguageTool as a backend.
 
-I didn't like the fact that original app that comes with libre translate doesn't remember my previous language choices therefore I've decided to make my own frontend. That also allows me to clean it up visually.
+I didn't like the fact that original app that comes with libre translate doesn't remember my previous language choices therefore I've decided to make my own frontend. That also allows me to clean it up visually. Eventually I've also decided that I don't like the fact that LanguageTool runs everywhere in my system and since there's no self-hosted frontend for it - I've extended the tool.
 
 <p align="center">
   <img src="docs/screenshot.png" alt="pole_translate" align="center">
+</p>
+
+<p align="center">
+  <img src="docs/with_errors.png" alt="pole_translate" align="center">
+</p>
+<p align="center">
+  <img src="docs/without_errors.png" alt="pole_translate" align="center">
 </p>
 
 ## How to run: Docker
@@ -29,6 +36,39 @@ Here's a sample docker compose:
     ports:
       - 80:80
     image: kweg/pole-libretranslate:latest
+```
+
+### On running backends
+
+#### Libre translate
+
+```
+services:
+  libretranslate:
+    tty: true
+    stdin_open: true
+    ports:
+      - PORT:5000
+    environment:
+      - host=your.libretranslate.instance
+    image: libretranslate/libretranslate
+```
+
+#### Language tool
+
+```
+services:
+  languagetool:
+      restart: unless-stopped
+      image: elestio/languagetool:latest
+      ports:
+      - PORT:8010
+      environment:
+      - langtool_languageModel=/ngrams
+      - Java_Xms=512m
+      - Java_Xmx=1g
+      volumes:
+        - ~/ngramsDir:/ngrams
 ```
 
 ## How to run: Code
