@@ -8,10 +8,12 @@ export const SelectLanguage = ({
   languages,
   value,
   setValue,
+  label,
 }: {
   languages: Lang[];
   value: LangChoice;
   setValue: (value: LangChoice) => void;
+  label?: string;
 }) => {
   const [windowWidth] = useWindowSize();
   if (!languages) {
@@ -30,7 +32,7 @@ export const SelectLanguage = ({
         //@ts-expect-error: this is fine for now
         onChange={(e, value) => setValue(value)}
         value={value}
-        renderInput={(params) => <TextField {...params} />}
+        renderInput={(params) => <TextField {...params} label={label} />}
       />
     </Stack>
   );

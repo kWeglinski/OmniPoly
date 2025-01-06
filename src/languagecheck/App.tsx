@@ -91,11 +91,14 @@ function App() {
 
   return (
     <>
-      <SelectLanguage
-        languages={languages}
-        setValue={langSetter}
-        value={language}
-      />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <SelectLanguage
+          label="language"
+          languages={languages}
+          setValue={langSetter}
+          value={language}
+        />
+      </div>
       <Stack
         direction={windowWidth > 800 ? "row" : "column"}
         className="translation"
