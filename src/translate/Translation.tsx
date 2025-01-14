@@ -42,6 +42,7 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
         </IconButton>
       )}
       <p className="translated-text">{translated}</p>
+      {answer.notableWords && <p className="translated-text">{answer.notableWords}</p>}
       {answer?.alternatives?.length > 0 && (
         <>
           <IconButton onClick={() => choice > 0 && setChoice(choice - 1)}>

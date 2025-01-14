@@ -20,6 +20,7 @@ function App() {
   const [languages, setLanguages] = useState<Lang[]>([]);
   const [source, setSource] = useState(getFromLS("source"));
   const [target, setTarget] = useState(getFromLS("target"));
+  const [useAI, setUseAi] = useState(false);
 
   const questionSetter = (q: string) => {
     localStorage.setItem("question", q);
@@ -32,14 +33,18 @@ function App() {
         return;
       }
       setLoading(true);
-      API()
-        .getTranslation(source, target, text)
+      const api = API();
+      api[useAI ? "getOllamaTranslation" : "getTranslation"](
+        source,
+        target,
+        text
+      )
         .then((data) => {
           setAnswer(data);
         })
         .finally(() => setLoading(false));
     },
-    []
+    [useAI]
   );
 
   const getLanguages = useCallback(() => {
@@ -60,7 +65,7 @@ function App() {
     if (q.length > 1) {
       translate(source, target, q);
     }
-  }, [q, source, target, translate]);
+  }, [q, source, target, translate, useAI]);
 
   useEffect(() => {
     if (languages.length < 1) {
@@ -85,6 +90,8 @@ function App() {
         setSource={setSource}
         target={target}
         setTarget={setTarget}
+        useAi={useAI}
+        setUseAi={setUseAi}
       />
 
       <TransBox

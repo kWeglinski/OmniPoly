@@ -80,6 +80,7 @@ textarea, .textarea {
   color: transparent;
 }
 .translated-text {
+  white-space: pre-line;
   padding: 20px 0;
   font-size: 20px;
   font-family: "merriweatherlight", serif;

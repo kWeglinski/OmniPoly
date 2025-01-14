@@ -31,6 +31,8 @@ Here's a sample docker compose:
     environment:
       LTAPI: https://your.languagetool.instance
       API: https://your.libretranslate.instance
+      OLLAMA_MODEL: model_name
+      OLLAMA_API: https://your.ollama.instance
       # pick one of: 'pole' | 'light' | 'dark' 
       THEME: 'dark'
     ports:
