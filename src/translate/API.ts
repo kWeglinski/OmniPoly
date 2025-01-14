@@ -31,7 +31,7 @@ export const API = () => {
     model: window.ollama_model ?? "llama3.2",
   };
   const getOllamaTranslation = (
-    source: LangChoice,
+    _source: LangChoice,
     target: LangChoice,
     text: string
   ) =>

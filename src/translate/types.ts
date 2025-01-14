@@ -14,6 +14,7 @@ export type LangChoice = Lang & History;
 export type TranslationResponse = {
   alternatives: string[];
   translatedText: string;
+  notableWords?: string;
   detectedLanguage?: {
     language: string;
   };
