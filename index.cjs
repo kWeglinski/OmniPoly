@@ -30,18 +30,19 @@ const handleProxyGET = (url, res) => {
 };
 
 const handleProxyPost = (url, req, res) => {
-  console.log({ body: req.body });
   fetch(url, {
     method: "POST",
     body: JSON.stringify(req.body),
     headers: { "Content-Type": "application/json" },
   })
-    .then((data) => data.json())
+    .then((data) => {
+      return data.json();
+    })
     .then((data) => {
       res.send(data);
     })
     .catch((error) => {
-      console.log(error);
+      console.log({ error, url });
       res.send(error);
     });
 };
@@ -67,7 +68,7 @@ const handleFormDataPost = (url, req, res) => {
       res.send(data);
     })
     .catch((error) => {
-      console.log(error);
+      console.log({ error, url });
       res.send(error);
     });
 };
