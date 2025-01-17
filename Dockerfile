@@ -1,19 +1,31 @@
+# Stage 1: Build the Node.js/React application
 ARG NODE_VERSION=20.12.2
-FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine as base
+FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine as build-stage
 
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+
+# Copy the rest of your project files
 COPY . .
 
+# Build the React app
 RUN npm run build
 
-FROM --platform=linux/amd64 nginx:alpine
-COPY --from=base /app/dist /usr/share/nginx/html
-COPY ./replace_env.sh /replace_env.sh
+# Stage 2: Set up the Node.js/Express server to serve the React app
+FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine as production-stage
 
-RUN chmod +x /replace_env.sh
+WORKDIR /app
+
+# Install only prod dependencies
+COPY package*.json ./
+RUN npm install --only=production
+
+# Copy the built React files from the build stage
+COPY --from=build-stage /app/dist ./dist
+
+# Create a simple Express server to serve the React app
+COPY index.js .
 
 EXPOSE 80
-# replace_env puts API url in window context
-CMD /bin/sh '/replace_env.sh' && nginx -g "daemon off;"
+CMD ["node", "index.js"]

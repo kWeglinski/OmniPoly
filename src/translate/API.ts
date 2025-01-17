@@ -1,17 +1,12 @@
 import { LangChoice } from "./types";
 
 export const API = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const libreUrl = urlParams.get("api");
-
-  //@ts-expect-error: window
-  const baseUrl = libreUrl ?? window._libreurl ?? "http://localhost:5000";
   const getTranslation = (
     source: LangChoice,
     target: LangChoice,
     text: string
   ) =>
-    fetch(`${baseUrl}/translate`, {
+    fetch(`/api/libretranslate/translate`, {
       method: "POST",
       body: JSON.stringify({
         q: text,
@@ -24,21 +19,14 @@ export const API = () => {
       headers: { "Content-Type": "application/json" },
     }).then((data) => data.json());
 
-  const ollama = {
-    //@ts-expect-error: window
-    api: window._ollama_api ?? "http://localhost:11434",
-    //@ts-expect-error: window
-    model: window.ollama_model ?? "llama3.2",
-  };
   const getOllamaTranslation = (
     _source: LangChoice,
     target: LangChoice,
     text: string
   ) =>
-    fetch(`${ollama.api}/api/generate`, {
+    fetch(`/api/ollama/generate`, {
       method: "POST",
       body: JSON.stringify({
-        model: ollama.model,
         prompt: `
         You are an advanced language model tasked with translating the provided text into ${target.name}. 
 
@@ -93,7 +81,7 @@ export const API = () => {
       });
 
   const getLanguages = () =>
-    fetch(`${baseUrl}/languages`).then((data) => data.json());
+    fetch(`/api/libretranslate/languages`).then((data) => data.json());
 
   return {
     getTranslation,

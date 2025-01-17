@@ -84,62 +84,48 @@ interface ExtendedSentenceRange {
 }
 
 export const API = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const languageCheckerUrl = urlParams.get("ltapi");
-
-  const baseUrl =
-    //@ts-expect-error: window
-    languageCheckerUrl ?? window._lturl ?? "http://localhost:5000";
-
   const getChecked = (text: string, lang: LangChoice) => {
-    const headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    };
-
-    const formData = new URLSearchParams();
-    formData.append("text", text);
-    formData.append("language", lang.longCode ?? lang.code);
-    return fetch(`${baseUrl}/v2/check`, {
+    return fetch("/api/languagetool/check", {
       method: "POST",
-      headers: headers,
-      body: formData.toString(),
-    }).then((data) => {
-      return data.json();
-    });
+      body: JSON.stringify({
+        text,
+        language: lang.longCode ?? lang.code,
+      }),
+      headers: { "Content-Type": "application/json" },
+    }).then((data) => data.json());
   };
 
-  const addToDict = (word: string) => {
-    const headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    };
+  // const addToDict = (word: string) => {
+  // const headers = {
+  //   "Content-Type": "application/x-www-form-urlencoded",
+  //   Accept: "application/json",
+  // };
 
-    // Define the form data
-    const formData = new URLSearchParams();
-    formData.append("word", word);
-    formData.append("username", "test");
+  // // Define the form data
+  // const formData = new URLSearchParams();
+  // formData.append("word", word);
+  // formData.append("username", "test");
 
-    // Make the POST request using fetch
-    fetch(`${baseUrl}/v2/words/add`, {
-      method: "POST",
-      headers: headers,
-      body: formData.toString(),
-    })
-      .then((response) => response.json()) // Parse the JSON response
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  // Make the POST request using fetch
+  //   fetch(`${baseUrl}/v2/words/add`, {
+  //     method: "POST",
+  //     headers: headers,
+  //     body: formData.toString(),
+  //   })
+  //     .then((response) => response.json()) // Parse the JSON response
+  //     .then((data) => {
+  //       console.log("Success:", data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
   // fetch(`${baseUrl}/v2/words/add?word=${fixedEncodeURIComponent(word)}`, {
   //   method: "POST",
   // }).then(() => {});
 
   const getLangs = () => {
-    return fetch(`${baseUrl}/v2/languages`, {
+    return fetch(`api/languagetool/languages`, {
       method: "GET",
     }).then((data) => {
       return data.json();
@@ -148,7 +134,7 @@ export const API = () => {
 
   return {
     getChecked,
-    addToDict,
-    getLangs
+    // addToDict,
+    getLangs,
   };
 };
