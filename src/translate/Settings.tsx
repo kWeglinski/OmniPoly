@@ -22,6 +22,7 @@ export const Settings = ({
   setTarget,
   useAi,
   setUseAi,
+  ollama,
 }: {
   languages: Lang[];
   source: LangChoice;
@@ -31,6 +32,7 @@ export const Settings = ({
   setTarget: React.Dispatch<React.SetStateAction<unknown>>;
   useAi: boolean;
   setUseAi: (val: boolean) => void;
+  ollama: boolean;
 }) => {
   const targets =
     source.code === AUTOMATIC.code
@@ -45,24 +47,26 @@ export const Settings = ({
 
   return langLoaded ? (
     <div>
-      <FormControlLabel
-        sx={{ float: "right" }}
-        control={
-          <Switch
-            checked={useAi}
-            onChange={() => setUseAi(!useAi)}
-            size="small"
-          />
-        }
-        label={
-          <Stack
-            direction="row"
-            sx={{ justifyContent: "center", alignItems: "center" }}
-          >
-            <span style={{ fontSize: "12px" }}>AI</span>
-          </Stack>
-        }
-      />
+      {ollama && (
+        <FormControlLabel
+          sx={{ float: "right" }}
+          control={
+            <Switch
+              checked={useAi}
+              onChange={() => setUseAi(!useAi)}
+              size="small"
+            />
+          }
+          label={
+            <Stack
+              direction="row"
+              sx={{ justifyContent: "center", alignItems: "center" }}
+            >
+              <span style={{ fontSize: "12px" }}>AI</span>
+            </Stack>
+          }
+        />
+      )}
       <div className="settings">
         <Stack
           direction={windowWidth > 800 ? "row" : "column"}

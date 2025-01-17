@@ -73,6 +73,15 @@ const handleFormDataPost = (url, req, res) => {
     });
 };
 
+app.get("/api/status", (req, res) => {
+  res.send({
+    LANGUAGE_TOOL,
+    LIBRETRANSLATE,
+    OLLAMA,
+    OLLAMA_MODEL,
+  });
+});
+
 app.get("/api/libretranslate/languages", (req, res) => {
   handleProxyGET(`${LIBRETRANSLATE}/languages`, res);
 });

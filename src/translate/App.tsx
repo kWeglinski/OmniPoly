@@ -7,7 +7,7 @@ import { API } from "./API";
 import { TransBox } from "./TransBox";
 import { Lang, LangChoice, TranslationResponse } from "./types";
 
-function App() {
+function App({ ollama }: { ollama: boolean }) {
   const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState(
     localStorage.getItem("question") ?? ""
@@ -90,6 +90,7 @@ function App() {
         setSource={setSource}
         target={target}
         setTarget={setTarget}
+        ollama={ollama}
         useAi={useAI}
         setUseAi={setUseAi}
       />

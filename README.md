@@ -1,6 +1,7 @@
 # NEW:
 
-Support for language tool has been added!
+- Support for language tool has been added!
+- Ollama for translation has been added!
 
 # Pole Language Frontend
 
@@ -29,10 +30,10 @@ Here's a sample docker compose:
   pole-libretranslate:
     restart: unless-stopped
     environment:
-      LTAPI: https://your.languagetool.instance
-      API: https://your.libretranslate.instance
+      LANGUAGE_TOOL: https://your.languagetool.instance
+      LIBRETRANSLATE: https://your.libretranslate.instance
+      OLLAMA: https://your.ollama.instance
       OLLAMA_MODEL: model_name
-      OLLAMA_API: https://your.ollama.instance
       # pick one of: 'pole' | 'light' | 'dark' 
       THEME: 'dark'
     ports:

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -35,34 +35,30 @@ function a11yProps(index: number) {
   };
 }
 
-const hasLangTool = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const languageCheckerUrl = urlParams.get("ltapi");
-
-  const baseUrl =
-    //@ts-expect-error: window
-    languageCheckerUrl ?? window._lturl;
-
-  return baseUrl !== "%LTAPI%";
-};
-
-const hasLibreTanslate = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const libreUrl = urlParams.get("api");
-
-  //@ts-expect-error: window
-  const baseUrl = libreUrl ?? window._libreurl;
-
-  return baseUrl !== "%API%";
-};
-
 export const Switcher = () => {
   const initTab = parseInt(localStorage.getItem("tab") ?? "0");
+  const [status, setStatus] = useState({
+    libreTranslate: false,
+    languageTool: false,
+    ollama: false,
+  });
   const [tab, setTab] = useState(initTab);
   const tabSetter = (val: number) => {
     setTab(val);
     localStorage.setItem("tab", val.toString());
   };
+
+  useEffect(() => {
+    fetch("/api/status")
+      .then((data) => data.json())
+      .then((data) => {
+        setStatus({
+          libreTranslate: data.LIBRETRANSLATE,
+          languageTool: data.LANGUAGE_TOOL,
+          ollama: data.OLLAMA,
+        });
+      });
+  }, []);
 
   return (
     <>
@@ -73,12 +69,12 @@ export const Switcher = () => {
           onChange={(_, val) => tabSetter(val)}
           aria-label="basic tabs example"
         >
-          {hasLibreTanslate() && <Tab label="Translate" {...a11yProps(0)} />}
-          {hasLangTool() && <Tab label="Language Check" {...a11yProps(1)} />}
+          {status.libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
+          {status.languageTool && <Tab label="Language Check" {...a11yProps(1)} />}
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>
-        <Translate />
+        <Translate ollama={status.ollama} />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={1}>
         <LangCheck />
