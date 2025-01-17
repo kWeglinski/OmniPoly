@@ -5,10 +5,19 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 80;
 
-const LANGUAGE_TOOL = process.env.LANGUAGE_TOOL
-const LIBRETRANSLATE = process.env.LIBRETRANSLATE
-const OLLAMA = process.env.OLLAMA
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL
+const LANGUAGE_TOOL = process.env.LANGUAGE_TOOL;
+const LIBRETRANSLATE = process.env.LIBRETRANSLATE;
+const OLLAMA = process.env.OLLAMA;
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL;
+
+console.log(`
+==== services setup ====
+LANGUAGE_TOOL: ${LANGUAGE_TOOL}
+LIBRETRANSLATE: ${LIBRETRANSLATE}
+OLLAMA: ${OLLAMA}
+OLLAMA_MODEL: ${OLLAMA_MODEL}
+========================
+`);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
