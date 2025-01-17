@@ -25,7 +25,7 @@ RUN npm install --only=production
 COPY --from=build-stage /app/dist ./dist
 
 # Create a simple Express server to serve the React app
-COPY index.js .
+COPY index.cjs .
 
 EXPOSE 80
-CMD ["node", "index.js"]
+CMD ["node", "index.cjs"]
