@@ -82,7 +82,7 @@ function App() {
   // }, []);
 
   useEffect(() => {
-    if (q.length > 1) {
+    if (q.length > 1 && language) {
       check(q, language);
     }
   }, [q, check, language]);

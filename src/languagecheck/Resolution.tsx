@@ -138,17 +138,17 @@ export const Resolution = ({
   };
   return (
     <div style={{paddingTop: '20px'}}>
-      {error.length > 0 && (
+      {error?.length > 0 && (
         <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">
           {error}
         </Alert>
       )}
-      {info?.matches.length === 0 && (
+      {info?.matches?.length === 0 && (
         <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
           All good!
         </Alert>
       )}
-      {info?.matches.map((data, i) => (
+      {info?.matches?.map((data, i) => (
         <DisplayMatch
           key={i}
           {...data}
