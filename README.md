@@ -1,13 +1,18 @@
-# NEW:
+# Latest Features:
 
-- Support for language tool has been added!
-- Ollama for translation has been added!
+- Support for language tool
+- Ollama for translation and interesting sentences extraction
 
-# Pole Language Frontend
+# OmniPoly 
 
-This is a frontend app that uses LibreTranslate and LanguageTool as a backend.
+Welcome to a solution for translation and language enhancement tool. This project integrates Libre Translate for accurate translations, LanguageTool for grammar and style checks, and AI Translation for modern touch of sentiment analysis and interesting sentences extraction.
 
-I didn't like the fact that original app that comes with libre translate doesn't remember my previous language choices therefore I've decided to make my own frontend. That also allows me to clean it up visually. Eventually I've also decided that I don't like the fact that LanguageTool runs everywhere in my system and since there's no self-hosted frontend for it - I've extended the tool.
+Key features include:
+- Translation: Text translation across multiple languages (see: [libretranslate](https://github.com/LibreTranslate/LibreTranslate)).
+- Grammar Checking: Ensures your text is not only translated but also reads well with proper grammar and style (see: [languagetool](https://github.com/languagetool-org/languagetool)).
+- AI-Powered Insights: Utilizes Large Language Models to analyze sentiments and extract interesting sentences, adding depth to your translations (see: [ollama](https://github.com/ollama/ollama)).
+
+The project started with the fact that I didn't like the standard app coming with Libre Translate (i.e. it didn't remember my previous choices). So I've decided to make my own. Eventually I've found out about self-hosted LanguageTool, and then I've learned that it does not have any frontend...
 
 <p align="center">
   <img src="docs/screenshot.png" alt="pole_translate" align="center">
@@ -27,7 +32,7 @@ The most recommended way to start it up is to use Docker.
 Here's a sample docker compose:
 
 ```
-  pole-libretranslate:
+  OmniPoly:
     restart: unless-stopped
     environment:
       LANGUAGE_TOOL: https://your.languagetool.instance
@@ -73,42 +78,3 @@ services:
       volumes:
         - ~/ngramsDir:/ngrams
 ```
-
-## How to run: Code
-
-this is a standard Vite setup. Simply run: `npm run install` and then `npm run dev`. You'll also have to either go to index.html and change window vars (similarly to docker one)
-
-Or
-
-Use url param `localhost:5173/?api=https://your.api.instance&lturl=https://your.languagetool.instance`
-
-## React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-### Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
