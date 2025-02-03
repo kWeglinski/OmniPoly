@@ -9,6 +9,18 @@ const LANGUAGE_TOOL = process.env.LANGUAGE_TOOL;
 const LIBRETRANSLATE = process.env.LIBRETRANSLATE;
 const OLLAMA = process.env.OLLAMA;
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL;
+const THEME = process.env.THEME;
+const LIBRETRANSLATE_API_KEY = process.env.LIBRETRANSLATE_API_KEY;
+
+const maskString = (str) => {
+  if (str.length <= 3) {
+    return str;
+  }
+
+  const visibleChars = str.substring(0, 3);
+  const stars = "*".repeat(str.length - 3);
+  return visibleChars + stars;
+};
 
 console.log(`
 ==== services setup ====
@@ -16,6 +28,8 @@ LANGUAGE_TOOL: ${LANGUAGE_TOOL}
 LIBRETRANSLATE: ${LIBRETRANSLATE}
 OLLAMA: ${OLLAMA}
 OLLAMA_MODEL: ${OLLAMA_MODEL}
+THEME: ${THEME}
+API_KEY: ${maskString(LIBRETRANSLATE_API_KEY)} // masked
 ========================
 `);
 
@@ -79,6 +93,7 @@ app.get("/api/status", (req, res) => {
     LIBRETRANSLATE,
     OLLAMA,
     OLLAMA_MODEL,
+    THEME,
   });
 });
 
@@ -87,7 +102,11 @@ app.get("/api/libretranslate/languages", (req, res) => {
 });
 
 app.post("/api/libretranslate/translate", (req, res) => {
-  handleProxyPost(`${LIBRETRANSLATE}/translate`, req, res);
+  handleProxyPost(
+    `${LIBRETRANSLATE}/translate`,
+    { ...req, body: { ...req.body, api_key: LIBRETRANSLATE_API_KEY ?? "" } },
+    res
+  );
 });
 
 app.post("/api/ollama/generate", (req, res) => {

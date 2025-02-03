@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -35,30 +35,23 @@ function a11yProps(index: number) {
   };
 }
 
-export const Switcher = () => {
+export const Switcher = ({
+  status,
+}: {
+  status: {
+    libreTranslate: boolean;
+    languageTool: boolean;
+    ollama: boolean;
+    theme: string;
+  };
+}) => {
   const initTab = parseInt(localStorage.getItem("tab") ?? "0");
-  const [status, setStatus] = useState({
-    libreTranslate: false,
-    languageTool: false,
-    ollama: false,
-  });
+
   const [tab, setTab] = useState(initTab);
   const tabSetter = (val: number) => {
     setTab(val);
     localStorage.setItem("tab", val.toString());
   };
-
-  useEffect(() => {
-    fetch("/api/status")
-      .then((data) => data.json())
-      .then((data) => {
-        setStatus({
-          libreTranslate: data.LIBRETRANSLATE,
-          languageTool: data.LANGUAGE_TOOL,
-          ollama: data.OLLAMA,
-        });
-      });
-  }, []);
 
   return (
     <>
@@ -70,7 +63,9 @@ export const Switcher = () => {
           aria-label="basic tabs example"
         >
           {status.libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
-          {status.languageTool && <Tab label="Language Check" {...a11yProps(1)} />}
+          {status.languageTool && (
+            <Tab label="Language Check" {...a11yProps(1)} />
+          )}
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>
