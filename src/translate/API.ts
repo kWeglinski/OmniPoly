@@ -14,7 +14,7 @@ export const API = () => {
         target: target.code,
         format: "text",
         alternatives: 3,
-        api_key: "",
+        api_key: import.meta.env.VITE_LIBRETRANSLATE_APIKEY,
       }),
       headers: { "Content-Type": "application/json" },
     }).then((data) => data.json());

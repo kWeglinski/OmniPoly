@@ -37,6 +37,7 @@ Here's a sample docker compose:
     environment:
       LANGUAGE_TOOL: https://your.languagetool.instance
       LIBRETRANSLATE: https://your.libretranslate.instance
+      VITE_LIBRETRANSLATE_APIKEY: <your-libretranslate-api-key>
       OLLAMA: https://your.ollama.instance
       OLLAMA_MODEL: model_name
       # pick one of: 'pole' | 'light' | 'dark' 
