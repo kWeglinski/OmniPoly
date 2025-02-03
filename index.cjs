@@ -13,7 +13,7 @@ const THEME = process.env.THEME;
 const LIBRETRANSLATE_API_KEY = process.env.LIBRETRANSLATE_API_KEY;
 
 const maskString = (str) => {
-  if (str.length <= 3) {
+  if (!str || str.length <= 3) {
     return str;
   }
 

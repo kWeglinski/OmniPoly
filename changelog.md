@@ -1,3 +1,7 @@
+### 0.6.1
+
+- Fix: silly mistake, added check on string masking
+
 ### 0.6.0
 
 - Added `LIBRETRANSLATE_API_KEY` env variable to support API key authentication for LibreTranslate. [#3](https://github.com/kWeglinski/OmniPoly/issues/3)
