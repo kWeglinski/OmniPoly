@@ -1,3 +1,7 @@
+### 0.8.0
+
+- Added `LIBRETRANSLATE_LANGUAGES` and `LANGUAGE_TOOL_LANGUAGES` env variables to specify supported languages for LibreTranslate and LanguageTool respectively.
+
 ### 0.7.0
 
 - Docker tagged releases
