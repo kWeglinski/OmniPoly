@@ -1,3 +1,7 @@
+### 0.7.0
+
+- Docker tagged releases
+
 ### 0.6.1
 
 - Fix: silly mistake, added check on string masking
