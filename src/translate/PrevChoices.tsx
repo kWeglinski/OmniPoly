@@ -1,13 +1,14 @@
 import { Chip } from "@mui/material";
 import { useWindowSize } from "../common/useWindowSize";
-import { Lang } from "./types";
+import { Lang, LangChoice } from "./types";
+import { actions } from "../store/translate";
 
 export const PrevChoices = ({
   history,
   setState,
 }: {
   history: Lang[];
-  setState: (value: Lang) => void;
+  setState: typeof actions.setSource | typeof actions.setTarget;
 }) => {
   const [windowWidth] = useWindowSize();
   if (windowWidth < 600) {
@@ -25,7 +26,7 @@ export const PrevChoices = ({
         .map((elem) => (
           <Chip
             key={elem.code}
-            onClick={() => setState(elem)}
+            onClick={() => setState(elem as LangChoice)}
             label={elem.name}
           />
         ))}

@@ -1,18 +1,12 @@
-import { LanguageToolResponse, Match } from "./API";
+import styled from "styled-components";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import { actions, useGrammar } from "../store/grammar";
+import { IconButton } from "@mui/material";
+import { copyToClipboard } from "../common/utils";
 
-const HighlightText = ({
-  text,
-  highlights,
-  onChange,
-  setSelection,
-  selection,
-}: {
-  text: string;
-  highlights: Match[];
-  onChange: (t: string) => void;
-  setSelection: (i: number) => void;
-  selection: number | null;
-}) => {
+const HighlightText = () => {
+  const { selection, question: text, answer } = useGrammar();
+  const highlights = answer?.matches || [];
   let lastIndex = 0;
   const renderedHighlights = [];
 
@@ -33,7 +27,7 @@ const HighlightText = ({
         style={{
           background: selection === i ? "rgba(255,0,0,1)" : "rgba(255,0,0,0.5",
         }}
-        onClick={() => setSelection(i)}
+        onClick={() => actions.setSelection(i)}
       >
         {text.substring(nOffset + offset, nOffset + offset + length)}
       </span>
@@ -50,43 +44,46 @@ const HighlightText = ({
   }
 
   return (
-    //@ts-expect-error: event
-    <div className="textarea" contentEditable onInput={onChange}>
+    <div
+      className="textarea"
+      contentEditable
+      onInput={(e) => {
+        //@ts-expect-error: event type
+        actions.setQuestion(e.target.textContent);
+      }}
+    >
       {renderedHighlights}
     </div>
   );
 };
 
-export const TextBox = ({
-  question,
-  setQuestion,
-  highlights,
-  selection,
-  setSelection,
-}: {
-  highlights: LanguageToolResponse | null;
-  question: string;
-  setQuestion: (q: string) => void;
-  selection: number | null;
-  setSelection: (i: number) => void;
-}) => {
+const IconContainer = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 99999;
+`;
+
+export const TextBox = () => {
+  const { question } = useGrammar();
+
   return (
     <>
       <div className="autosize" data-replicated-value={question}>
-        <HighlightText
-          onChange={(e) => {
-            //@ts-expect-error: event
-            setQuestion(e.target.textContent);
-          }}
-          text={question}
-          highlights={highlights?.matches || []}
-          selection={selection}
-          setSelection={setSelection}
-        />
+        <IconContainer>
+          <IconButton
+            onClick={() => copyToClipboard(question)}
+            aria-label="copy"
+            size="small"
+          >
+            <ContentCopyRoundedIcon fontSize="inherit" />
+          </IconButton>
+        </IconContainer>
+        <HighlightText />
         <textarea
           placeholder="Your text here..."
           value={question}
-          onChange={(e) => setQuestion(e.target.value)}
+          onChange={(e) => actions.setQuestion(e.target.value)}
           style={{ position: "absolute", top: 0, left: 0 }}
           spellCheck="false"
         >

@@ -28,32 +28,39 @@ export const API = () => {
       method: "POST",
       body: JSON.stringify({
         prompt: `
-        You are an advanced language model tasked with translating the provided text into ${target.name}. 
+        You are an advanced language model tasked with translating the provided text into ${target.name}.
 
-        First you will provide translation of provided text and highlight any notable words or phrases in the source language within translation. 
+First, you will provide a translation of the provided text and highlight any notable words or phrases from the source language within the translation using square brackets [].
 
-        For each highlighted word or phrase, provide a brief explanation of its significance, context, or usage.
-        Make sure the explanations are in ${target.name} language.
+For each highlighted word or phrase, provide a brief explanation of its significance, context, or usage. Ensure that these explanations are in ${target.name} language.
 
-        ### Text to Translate:
-        ${text}
-        
-        ### Example:
-       
-        #### Input:
-        **Text to Translate:**
-        "Climate change is one of the most pressing issues of our time. It affects everything from weather patterns to agricultural productivity."
-        
-        **Target Language:**
-        Spanish
-        
-        #### Output:
-        { 
-        translation: "Cambio climático es uno de los problemas más urgentes[1] de nuestra época. Afecta todo, desde los patrones climáticos hasta la productividad agrícola[2].",
-        "notable words": 
-        1. urgentes (pressing issues) - "Pressing issues" are problems that require immediate attention and action. In this context, it emphasizes the urgency of addressing climate change. \n
-        2. productividad agrícola (agricultural productivity) - "Agricultural productivity" refers to the efficiency of agricultural output relative to input. Climate change can significantly affect crop yields and food security, making this a crucial area of concern.
-        }
+### Text to Translate:
+${text}
+
+### Example:
+
+#### Input:
+**Text to Translate:**
+"Climate change is one of the most pressing issues of our time. It affects everything from weather patterns to agricultural productivity."
+
+**Target Language:**
+Spanish
+
+#### Output:
+{
+  translation: "Cambio climático es uno de los problemas más urgentes[1] de nuestra época. Afecta todo, desde los patrones climáticos hasta la productividad agrícola[2].",
+  notable words:
+  [
+    {
+      word: "urgentes (pressing issues)",
+      explanation: "Pressing issues" are problems that require immediate attention and action. In this context, it emphasizes the urgency of addressing climate change.
+    },
+    {
+      word: "productividad agrícola (agricultural productivity)",
+      explanation: "Agricultural productivity" refers to the efficiency of agricultural output relative to input. Climate change can significantly affect crop yields and food security, making this a crucial area of concern.
+    }
+  ]
+}
         `,
         format: {
           type: "object",
@@ -62,7 +69,19 @@ export const API = () => {
               type: "string",
             },
             "notable words": {
-              type: "string",
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  word: {
+                    type: "string",
+                  },
+                  explanation: {
+                    type: "string",
+                  },
+                },
+                required: ["word", "explanation"],
+              },
             },
           },
           required: ["translation", "notable words"],
@@ -74,6 +93,7 @@ export const API = () => {
       .then((data) => data.json())
       .then((data) => {
         const res = JSON.parse(data.response);
+        console.log({ res });
         return {
           translatedText: res.translation,
           notableWords: res["notable words"],

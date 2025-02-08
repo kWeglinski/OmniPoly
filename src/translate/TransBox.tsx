@@ -3,24 +3,11 @@ import { Source } from "./Source";
 import { Translation } from "./Translation";
 import { useWindowSize } from "../common/useWindowSize";
 import { AUTOMATIC } from "./utils";
-import { Lang, LangChoice, TranslationResponse } from "./types";
+import { actions, useTranslate } from "../store/translate";
 
-export const TransBox = ({
-  question,
-  questionSetter,
-  source,
-  languages,
-  answer,
-  loading,
-}: {
-  loading: boolean;
-  question: string;
-  questionSetter: (q: string) => void;
-  source: LangChoice;
-  languages: Lang[];
-  answer: TranslationResponse;
-}) => {
+export const TransBox = () => {
   const [windowWidth] = useWindowSize();
+  const { question, source, answer, languages, loading } = useTranslate();
   return (
     <Stack
       direction={windowWidth > 800 ? "row" : "column"}
@@ -29,7 +16,7 @@ export const TransBox = ({
       <div>
         <Source
           question={question}
-          setQuestion={questionSetter}
+          setQuestion={actions.setQuestion}
           answer={
             source?.code === AUTOMATIC.code
               ? answer

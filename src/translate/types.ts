@@ -11,10 +11,15 @@ export type History = {
 
 export type LangChoice = Lang & History;
 
+export type NotableWord = {
+  word: string;
+  explanation: string;
+}
+
 export type TranslationResponse = {
   alternatives: string[];
   translatedText: string;
-  notableWords?: string;
+  notableWords?: NotableWord[];
   detectedLanguage?: {
     language: string;
   };

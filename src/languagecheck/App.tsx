@@ -1,85 +1,57 @@
-import { useCallback, useEffect, useState } from "react";
-import { Divider, Stack } from "@mui/material";
+import { useCallback, useEffect } from "react";
+import { Autocomplete, Divider, Stack, TextField } from "@mui/material";
 import "./App.css";
 import { useDebounce } from "../common/useDebounce";
 import { TextBox } from "./Text";
 import { useWindowSize } from "../common/useWindowSize";
-import { API, LanguageToolResponse } from "./API";
+import { API } from "./API";
 import { Resolution } from "./Resolution";
-import { SelectLanguage } from "../common/SelectLanguage";
 import { LangChoice } from "../translate/types";
+import { actions, useGrammar, useInitialiseGrammar } from "../store/grammar";
 
-const autoLang = { name: "auto", code: "auto" };
+export const SelectLanguage = ({ label }: { label?: string }) => {
+  const { languages, language } = useGrammar();
+  const [windowWidth] = useWindowSize();
+  if (!languages) {
+    return null;
+  }
+
+  return (
+    <Stack spacing={3} sx={{ width: windowWidth < 600 ? "100%" : 200 }}>
+      <Autocomplete
+        id="tags-standard"
+        options={languages}
+        size="small"
+        getOptionLabel={(option) =>
+          option.longCode ? `${option.name} - ${option.longCode}` : option.name
+        }
+        //@ts-expect-error: this is fine for now
+        onChange={(e, value) => actions.setLanguage(value)}
+        value={language}
+        renderInput={(params) => <TextField {...params} label={label} />}
+      />
+    </Stack>
+  );
+};
+
 
 function App() {
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [question, setQuestion] = useState(
-    localStorage.getItem("question") ?? ""
-  );
-  const [languages, setLanguages] = useState<LangChoice[]>([]);
-  const clang = localStorage.getItem("lclang");
-  const [language, setLanguage] = useState(
-    clang ? JSON.parse(clang) : autoLang
-  );
-  const [selection, setSelection] = useState<number | null>(null);
-  const [answer, setAnswer] = useState<LanguageToolResponse | null>(null);
+  useInitialiseGrammar();
+  const { question, language } = useGrammar();
   const q = useDebounce(question, 1000) as string;
-
-  useEffect(() => {
-    API()
-      .getLangs()
-      .then((data) => {
-        setLanguages([autoLang, ...data]);
-      });
-  }, []);
-
-  const questionSetter = useCallback((text: string) => {
-    const standarisedQuestion = text.replace(/\t/g, "    ");
-    localStorage.setItem("question", standarisedQuestion);
-    setQuestion(standarisedQuestion);
-  }, []);
 
   const check = useCallback((text: string, language: LangChoice) => {
     if (!text) {
       return;
     }
-    setLoading(true);
+    actions.setLoading(true);
     API()
       .getChecked(text, language)
       .then((data) => {
-        setAnswer(data);
-        setError("");
+        actions.setAnswer(data);
       })
-      .catch((e) => setError(e.message))
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch((e) => actions.setError(e.message));
   }, []);
-
-  const popAnswer = (idx: number) => {
-    if (!answer) {
-      return;
-    }
-    const newAnswer = {
-      ...answer,
-      matches: answer.matches.filter((_, i) => i !== idx),
-    };
-    setAnswer(newAnswer);
-  };
-
-  const langSetter = (lang: LangChoice) => {
-    setLanguage(lang);
-    localStorage.setItem("lclang", JSON.stringify(lang));
-  };
-
-  // const addWord = useCallback((word: string) => {
-  //   API()
-  //     .addToDict(word)
-  //     .then(() => {
-  //       check(q);
-  //     });
-  // }, []);
 
   useEffect(() => {
     if (q.length > 1 && language) {
@@ -92,39 +64,18 @@ function App() {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <SelectLanguage
-          label="language"
-          languages={languages}
-          setValue={langSetter}
-          value={language}
-        />
+        <SelectLanguage label="language" />
       </div>
       <Stack
         direction={windowWidth > 800 ? "row" : "column"}
         className="translation"
       >
         <div>
-          <TextBox
-            question={question}
-            setQuestion={questionSetter}
-            highlights={answer}
-            selection={selection}
-            setSelection={setSelection}
-          />
+          <TextBox />
         </div>
         <Divider orientation="vertical" flexItem />
         <div style={{ position: "relative" }}>
-          <Resolution
-            // addWord={addWord}
-            error={error}
-            loading={loading}
-            selection={selection}
-            setSelection={setSelection}
-            info={answer}
-            original={q}
-            setQuestion={questionSetter}
-            popAnswer={popAnswer}
-          />
+          <Resolution />
         </div>
       </Stack>
     </>

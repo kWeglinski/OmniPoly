@@ -8,32 +8,18 @@ import {
 } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { useWindowSize } from "../common/useWindowSize";
-import { AUTOMATIC, withHistory } from "./utils";
-import { SelectLanguage } from "../common/SelectLanguage";
+import { AUTOMATIC } from "./utils";
+import {
+  SelectLanguage,
+} from "../common/SelectLanguage";
 import { PrevChoices } from "./PrevChoices";
-import { Lang, LangChoice } from "./types";
+import { actions, useTranslate } from "../store/translate";
+import { useSystemStatus } from "../store/status";
+import { LangChoice } from "./types";
 
-export const Settings = ({
-  languages,
-  source,
-  setSource,
-  target,
-  swapLangs,
-  setTarget,
-  useAi,
-  setUseAi,
-  ollama,
-}: {
-  languages: Lang[];
-  source: LangChoice;
-  setSource: React.Dispatch<React.SetStateAction<unknown>>;
-  target: LangChoice;
-  swapLangs: (source: LangChoice, target: LangChoice) => void;
-  setTarget: React.Dispatch<React.SetStateAction<unknown>>;
-  useAi: boolean;
-  setUseAi: (val: boolean) => void;
-  ollama: boolean;
-}) => {
+export const Settings = () => {
+  const { source, target, languages, useAI } = useTranslate();
+  const ollama = useSystemStatus((store) => store.ollama);
   const targets =
     source.code === AUTOMATIC.code
       ? languages.map((lang) => lang.code)
@@ -52,8 +38,8 @@ export const Settings = ({
           sx={{ float: "right" }}
           control={
             <Switch
-              checked={useAi}
-              onChange={() => setUseAi(!useAi)}
+              checked={useAI}
+              onChange={() => actions.setUseAI(!useAI)}
               size="small"
             />
           }
@@ -76,26 +62,26 @@ export const Settings = ({
         >
           <SelectLanguage
             value={source}
-            setValue={withHistory("source", setSource)}
+            setValue={actions.setSource}
             languages={languages}
           />
           {windowWidth > 600 && (
             <Chip
               variant="outlined"
               color="primary"
-              onClick={() => withHistory("source", setSource)(AUTOMATIC)}
+              onClick={() => actions.setSource(AUTOMATIC as LangChoice)}
               label={AUTOMATIC.name}
             />
           )}
           <PrevChoices
-            setState={withHistory("source", setSource)}
+            setState={actions.setSource}
             history={source?.history ?? []}
           />
         </Stack>
         <div>
           <IconButton
             disabled={source.code === AUTOMATIC.code}
-            onClick={() => swapLangs(source, target)}
+            onClick={() => actions.swapLangs()}
           >
             <SwapHorizIcon />
           </IconButton>
@@ -107,12 +93,12 @@ export const Settings = ({
           alignItems="center"
         >
           <SelectLanguage
-            value={target}
-            setValue={withHistory("target", setTarget)}
+            value={target as LangChoice}
+            setValue={actions.setTarget}
             languages={filteredTargets}
           />
           <PrevChoices
-            setState={withHistory("target", setTarget)}
+            setState={actions.setTarget}
             history={target?.history ?? []}
           />
         </Stack>

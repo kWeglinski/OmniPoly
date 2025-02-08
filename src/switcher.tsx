@@ -4,6 +4,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Translate from "./translate/App.tsx";
 import LangCheck from "./languagecheck/App.tsx";
+import { useSystemStatus } from "./store/status.tsx";
 
 interface CustomTabPanelProps {
   children?: React.ReactNode;
@@ -35,16 +36,8 @@ function a11yProps(index: number) {
   };
 }
 
-export const Switcher = ({
-  status,
-}: {
-  status: {
-    libreTranslate: boolean;
-    languageTool: boolean;
-    ollama: boolean;
-    theme: string;
-  };
-}) => {
+export const Switcher = () => {
+  const { libreTranslate, languageTool } = useSystemStatus();
   const initTab = parseInt(localStorage.getItem("tab") ?? "0");
 
   const [tab, setTab] = useState(initTab);
@@ -62,14 +55,12 @@ export const Switcher = ({
           onChange={(_, val) => tabSetter(val)}
           aria-label="basic tabs example"
         >
-          {status.libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
-          {status.languageTool && (
-            <Tab label="Language Check" {...a11yProps(1)} />
-          )}
+          {libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
+          {languageTool && <Tab label="Language Check" {...a11yProps(1)} />}
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>
-        <Translate ollama={status.ollama} />
+        <Translate />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={1}>
         <LangCheck />

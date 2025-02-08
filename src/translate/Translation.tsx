@@ -4,6 +4,7 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import { useState } from "react";
 import { TranslationResponse } from "./types";
+import { copyToClipboard } from "../common/utils";
 
 export const Translation = ({ answer }: { answer: TranslationResponse }) => {
   const [choice, setChoice] = useState(0);
@@ -22,9 +23,6 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
   };
 
   const max = answer?.alternatives?.length;
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
   const translated = getChoice(answer, choice);
 
   return (
@@ -42,7 +40,11 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
         </IconButton>
       )}
       <p className="translated-text">{translated}</p>
-      {answer.notableWords && <p className="translated-text">{answer.notableWords}</p>}
+      {answer.notableWords &&
+        answer.notableWords.length > 0 &&
+        answer.notableWords.map((word) => (
+          <p className="translated-text">{word.word} - {word.explanation}</p>
+        ))}
       {answer?.alternatives?.length > 0 && (
         <>
           <IconButton onClick={() => choice > 0 && setChoice(choice - 1)}>

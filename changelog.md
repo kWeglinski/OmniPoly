@@ -1,3 +1,10 @@
+### 0.9.0
+
+- State migrated from context to Zustand
+- Improvements in AI translation prompt
+- Added copy button for grammar checking
+- Added SnackBar to inform of action sucess
+
 ### 0.8.0
 
 - Added `LIBRETRANSLATE_LANGUAGES` and `LANGUAGE_TOOL_LANGUAGES` env variables to specify supported languages for LibreTranslate and LanguageTool respectively.

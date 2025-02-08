@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { LanguageToolResponse, Match } from "./API";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { Match } from "./API";
+import { actions, useGrammar } from "../store/grammar";
 
 type Fix = (start: number, length: number, value: string, idx: number) => void;
 
@@ -94,26 +95,14 @@ const DisplayMatch = ({
   );
 };
 
-export const Resolution = ({
-  error,
-  info,
-  original,
-  setQuestion,
-  selection,
-  setSelection,
-  popAnswer,
-  loading,
-}: // addWord,
-{
-  error: string;
-  loading: boolean;
-  info: LanguageToolResponse | null;
-  original: string;
-  setQuestion: (t: string) => void;
-  selection: number | null;
-  setSelection: (i: number) => void;
-  popAnswer: (i: number) => void;
-}) => {
+export const Resolution = () => {
+  const {
+    question: original,
+    loading,
+    error,
+    selection,
+    answer: info,
+  } = useGrammar();
   if (loading) {
     return (
       <div
@@ -133,11 +122,11 @@ export const Resolution = ({
     const fixed = `${original.substring(0, start)}${value}${original.substring(
       start + length
     )}`;
-    setQuestion(fixed);
-    popAnswer(idx);
+    actions.setQuestion(fixed);
+    actions.popAnswer(idx);
   };
   return (
-    <div style={{paddingTop: '20px'}}>
+    <div style={{ paddingTop: "20px" }}>
       {error?.length > 0 && (
         <Alert icon={<ErrorOutlineIcon fontSize="inherit" />} severity="error">
           {error}
@@ -154,7 +143,7 @@ export const Resolution = ({
           {...data}
           fix={fix}
           selected={selection === i}
-          setSelection={() => setSelection(i)}
+          setSelection={() => actions.setSelection(i)}
           idx={i}
           original={original}
           // addWord={addWord}
