@@ -4,7 +4,7 @@
 - Support for language tool
 - Ollama for translation and interesting sentences extraction
 
-# OmniPoly 
+# OmniPoly
 
 Welcome to a solution for translation and language enhancement tool. This project integrates Libre Translate for accurate translations, LanguageTool for grammar and style checks, and AI Translation for modern touch of sentiment analysis and interesting sentences extraction.
 
@@ -52,6 +52,12 @@ Here's a sample docker compose:
     image: kweg/omnipoly:latest
 ```
 
+### Disabling Specific Systems
+
+If you prefer not to use any of the following systems—AI, LanguageTool, or LibreTranslate—for any reason, you can easily disable them by omitting their respective environment variables during configuration.
+
+The project is designed in such a way that it will not display features that are unconfigured. This means if an environment variable for a particular system is not provided, the corresponding feature will be automatically hidden from view and will not be available for use.
+
 ### On running backends
 
 #### Libre translate
@@ -84,3 +90,13 @@ services:
       volumes:
         - ~/ngramsDir:/ngrams
 ```
+
+
+# Roadmap:
+
+- Developer experience - This project was initially built for myself and has unexpectedly grown. I've already started migration to proper state management but some work is still needed there. Then I need to improve ability to run it during development (introduction of BFF has made the setup cumbersome where it shouldn't be). Once that is solved, I'll introduce releases and tags.
+- Clear text area
+- Text workflow - The goal is to have a feeling of single text input across all modules. So we can translate and adjust the same text.
+  - ability to switch between translated text and input text in language tool
+  - AI tab to prompt AI to modify the input/translated text
+  - Sample flow (goal is to be able to follow any order multiple times) - type email in language A -> translate it to language B -> adjust text with help of AI (i.e. "make it more official") -> verify grammar
