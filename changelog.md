@@ -1,3 +1,7 @@
+### 0.10.3
+
+- dockerfile fix
+
 ### 0.10.1
 
 - dockerfile fix

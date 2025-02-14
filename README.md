@@ -1,5 +1,8 @@
 # Latest Features:
 
+- Added clear button to clear text boxes
+- Added auto full display alternative for shorter translations
+- Added option to add words to dictionary for grammar checks
 - Added language filters
 - Support for language tool
 - Ollama for translation and interesting sentences extraction

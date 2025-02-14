@@ -1,7 +1,7 @@
 {
   "name": "sth-libretranslate",
   "private": true,
-  "version": "0.10.2",
+  "version": "0.10.3",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"npm run node\"",
@@ -19,7 +19,8 @@
     "express": "^4.21.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "http-proxy-middleware": "^3.0.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
@@ -31,7 +32,6 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "http-proxy-middleware": "^3.0.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "zustand": "^5.0.3"
