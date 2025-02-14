@@ -29,4 +29,4 @@ COPY index.js .
 COPY server .
 
 EXPOSE 80
-CMD ["node", "index.cjs"]
+CMD ["node", "index.js"]
