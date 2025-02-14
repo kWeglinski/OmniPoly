@@ -1,3 +1,10 @@
+### 0.10.0 
+
+- Added clear button to clear text boxes
+- Updated development setup for ease of use
+- Added auto full display alternative for shorter translations
+- Added option to add words to dictionary for grammar checks
+
 ### 0.9.0
 
 - State migrated from context to Zustand

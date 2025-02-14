@@ -1,10 +1,22 @@
-import { Chip, IconButton } from "@mui/material";
+import { Chip, IconButton, Stack } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import { useState } from "react";
 import { TranslationResponse } from "./types";
 import { copyToClipboard } from "../common/utils";
+
+const ShowFullCutoff = 100;
+
+const getAlternativesLength = (
+  alternatives: TranslationResponse["alternatives"]
+) => {
+  if (!alternatives || alternatives.length === 0) {
+    return 0;
+  }
+  const asLengths = alternatives.map((alt) => alt.length);
+  return Math.max(...asLengths);
+};
 
 export const Translation = ({ answer }: { answer: TranslationResponse }) => {
   const [choice, setChoice] = useState(0);
@@ -24,6 +36,9 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
 
   const max = answer?.alternatives?.length;
   const translated = getChoice(answer, choice);
+  const hasAlternatives = answer?.alternatives?.length;
+  const hasNotableWords = answer.notableWords && answer.notableWords.length > 0;
+  const alternativesMaxLength = getAlternativesLength(answer?.alternatives);
 
   return (
     <>
@@ -40,12 +55,26 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
         </IconButton>
       )}
       <p className="translated-text">{translated}</p>
-      {answer.notableWords &&
-        answer.notableWords.length > 0 &&
-        answer.notableWords.map((word) => (
-          <p className="translated-text">{word.word} - {word.explanation}</p>
+      {hasNotableWords &&
+        answer.notableWords?.map((word) => (
+          <p className="translated-text">
+            {word.word} - {word.explanation}
+          </p>
         ))}
-      {answer?.alternatives?.length > 0 && (
+      {hasAlternatives && alternativesMaxLength < ShowFullCutoff && (
+        <Stack direction="row" gap={1} flexWrap={'wrap'}>
+          {answer.alternatives.map((alternative, index) => (
+            <Chip
+              label={alternative}
+              onClick={() => {
+                setChoice(index);
+              }}
+              variant={"outlined"}
+            />
+          ))}
+        </Stack>
+      )}
+      {hasAlternatives && alternativesMaxLength >= ShowFullCutoff && (
         <>
           <IconButton onClick={() => choice > 0 && setChoice(choice - 1)}>
             <ArrowLeftIcon />

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import { actions, useGrammar } from "../store/grammar";
 import { IconButton } from "@mui/material";
 import { copyToClipboard } from "../common/utils";
@@ -71,6 +72,13 @@ export const TextBox = () => {
     <>
       <div className="autosize" data-replicated-value={question}>
         <IconContainer>
+          <IconButton
+            onClick={() => actions.setQuestion("")}
+            aria-label="copy"
+            size="small"
+          >
+            <ClearRoundedIcon fontSize="inherit" />
+          </IconButton>
           <IconButton
             onClick={() => copyToClipboard(question)}
             aria-label="copy"

@@ -7,11 +7,14 @@ import {
   AccordionDetails,
   Alert,
   CircularProgress,
+  Stack,
+  Button,
 } from "@mui/material";
+import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Match } from "./API";
+import { API, Match } from "./API";
 import { actions, useGrammar } from "../store/grammar";
 
 type Fix = (start: number, length: number, value: string, idx: number) => void;
@@ -27,7 +30,7 @@ const DisplayMatch = ({
   selected,
   setSelection,
   idx,
-  // addWord,
+  rule,
   original,
 }: Match & {
   fix: Fix;
@@ -72,7 +75,7 @@ const DisplayMatch = ({
             sx={{ marginRight: 1, marginBottom: 0.5, marginTop: 0.5 }}
           />
         ))}
-        {/* {rule.category.id === "TYPOS" && (
+        {rule.category.id === "TYPOS" && (
           <>
             <Divider sx={{ mt: 2, mb: 2 }} />
             <Stack sx={{ justifyContent: "center", alignItems: "center" }}>
@@ -81,15 +84,18 @@ const DisplayMatch = ({
                 size="small"
                 variant="outlined"
                 sx={{ margin: "auto" }}
-                onClick={() =>
-                  addWord(context.text.substr(context.offset, context.length))
-                }
+                onClick={() => {
+                  fix(0, 0, "", idx);
+                  API().addWord(
+                    context.text.substr(context.offset, context.length)
+                  );
+                }}
               >
                 Add To Dictionary
               </Button>
             </Stack>
           </>
-        )} */}
+        )}
       </AccordionDetails>
     </Accordion>
   );
@@ -146,7 +152,6 @@ export const Resolution = () => {
           setSelection={() => actions.setSelection(i)}
           idx={i}
           original={original}
-          // addWord={addWord}
         />
       ))}
     </div>

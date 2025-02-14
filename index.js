@@ -1,6 +1,10 @@
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
+import express from "express";
+import path from "path";
+import bodyParser from "body-parser";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import { addWord, lookupWord } from "./server/words.js";
+
+const dirname = new URL(".", import.meta.url).pathname;
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -17,16 +21,19 @@ const getLanguages = (langs) => {
   }
 };
 
+const DEV = process.env.DEV
 const LANGUAGE_TOOL = process.env.LANGUAGE_TOOL;
 const LIBRETRANSLATE = process.env.LIBRETRANSLATE;
 const OLLAMA = process.env.OLLAMA;
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL;
 const THEME = process.env.THEME;
 const LIBRETRANSLATE_API_KEY = process.env.LIBRETRANSLATE_API_KEY;
-const LIBRETRANSLATE_LANGUAGES = getLanguages(process.env.LIBRETRANSLATE_LANGUAGES);
-const LANGUAGE_TOOL_LANGUAGES = getLanguages(process.env.LANGUAGE_TOOL_LANGUAGES);
-
-
+const LIBRETRANSLATE_LANGUAGES = getLanguages(
+  process.env.LIBRETRANSLATE_LANGUAGES
+);
+const LANGUAGE_TOOL_LANGUAGES = getLanguages(
+  process.env.LANGUAGE_TOOL_LANGUAGES
+);
 
 const maskString = (str) => {
   if (!str || str.length <= 3) {
@@ -48,6 +55,7 @@ THEME: ${THEME}
 API_KEY: ${maskString(LIBRETRANSLATE_API_KEY)} // masked
 LANGUAGE_TOOL_LANGUAGES: ${JSON.stringify(LANGUAGE_TOOL_LANGUAGES)}
 LIBRETRANSLATE_LANGUAGES: ${JSON.stringify(LIBRETRANSLATE_LANGUAGES)}
+DEV_MODE: ${!!DEV}
 ========================
 `);
 
@@ -79,7 +87,7 @@ const handleProxyPost = (url, req, res) => {
     });
 };
 
-const handleFormDataPost = (url, req, res) => {
+const handleFormDataPost = (url, req, res, filter) => {
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
     Accept: "application/json",
@@ -97,7 +105,7 @@ const handleFormDataPost = (url, req, res) => {
   })
     .then((data) => data.json())
     .then((data) => {
-      res.send(data);
+      res.send(filter ? filter(data) : data);
     })
     .catch((error) => {
       console.log({ error, url });
@@ -142,7 +150,41 @@ app.post("/api/ollama/generate", (req, res) => {
 });
 
 app.post("/api/languagetool/check", (req, res) => {
-  handleFormDataPost(`${LANGUAGE_TOOL}/v2/check`, req, res);
+  const filter = (result) => {
+    const filtered = {
+      ...result,
+      matches: result.matches
+        .map((match) => {
+          if (match.rule.category.id === "TYPOS") {
+            const exists = lookupWord(
+              match.context.text.substr(
+                match.context.offset,
+                match.context.length
+              )
+            );
+            if (exists) {
+              return false;
+            } else {
+              return match;
+            }
+          }
+        })
+        .filter((elem) => elem),
+    };
+    return filtered;
+  };
+  handleFormDataPost(`${LANGUAGE_TOOL}/v2/check`, req, res, filter);
+});
+
+app.post("/api/languagetool/add", (req, res) => {
+  try {
+    addWord(`${req.body.word}`.toLowerCase());
+    console.log("added:", `${req.body.word}`.toLowerCase());
+    res.status(201).send();
+  } catch (e) {
+    console.log(e);
+    res.status(500).send();
+  }
 });
 
 app.get("/api/languagetool/languages", (req, res) => {
@@ -150,17 +192,37 @@ app.get("/api/languagetool/languages", (req, res) => {
     if (LANGUAGE_TOOL_LANGUAGES.length === 0) {
       return data;
     }
-    return data.filter((item) => LANGUAGE_TOOL_LANGUAGES.includes(item.longCode));
+    return data.filter((item) =>
+      LANGUAGE_TOOL_LANGUAGES.includes(item.longCode)
+    );
   };
   handleProxyGET(`${LANGUAGE_TOOL}/v2/languages`, res, filter);
 });
 
+if (DEV) {
+  // Proxy requests to the Vite development server
+  app.use(
+    "/",
+    createProxyMiddleware({
+      target: "http://localhost:3000", // The port on which Vite is running
+      changeOrigin: true,
+      secure: false,
+      onError(err, req, res) {
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end(
+          "Something went wrong. And we are reporting a custom error message."
+        );
+      },
+    })
+  );
+}
+
 // Serve static files from the React build directory
-app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(dirname, "dist")));
 
 // Handle any requests that don't match the ones above by sending them the index.html file.
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
+  res.sendFile(path.join(dirname, "dist", "index.html"));
 });
 
 app.listen(PORT, () => {

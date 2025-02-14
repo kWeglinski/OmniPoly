@@ -1,3 +1,4 @@
+import { actions } from "../store/snack";
 import { LangChoice } from "../translate/types";
 
 export interface LanguageToolResponse {
@@ -95,34 +96,21 @@ export const API = () => {
     }).then((data) => data.json());
   };
 
-  // const addToDict = (word: string) => {
-  // const headers = {
-  //   "Content-Type": "application/x-www-form-urlencoded",
-  //   Accept: "application/json",
-  // };
-
-  // // Define the form data
-  // const formData = new URLSearchParams();
-  // formData.append("word", word);
-  // formData.append("username", "test");
-
-  // Make the POST request using fetch
-  //   fetch(`${baseUrl}/v2/words/add`, {
-  //     method: "POST",
-  //     headers: headers,
-  //     body: formData.toString(),
-  //   })
-  //     .then((response) => response.json()) // Parse the JSON response
-  //     .then((data) => {
-  //       console.log("Success:", data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // };
-  // fetch(`${baseUrl}/v2/words/add?word=${fixedEncodeURIComponent(word)}`, {
-  //   method: "POST",
-  // }).then(() => {});
+  const addWord = (word: string) => {
+    return fetch("/api/languagetool/add", {
+      method: "POST",
+      body: JSON.stringify({
+        word,
+      }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(() => {
+        actions.showSnack("Word added to dictionary.");
+      })
+      .catch(() => {
+        actions.showSnack("[Error] Can't add word to dictionary");
+      });
+  };
 
   const getLangs = () => {
     return fetch(`api/languagetool/languages`, {
@@ -134,7 +122,7 @@ export const API = () => {
 
   return {
     getChecked,
-    // addToDict,
+    addWord,
     getLangs,
   };
 };

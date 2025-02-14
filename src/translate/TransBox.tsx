@@ -13,7 +13,7 @@ export const TransBox = () => {
       direction={windowWidth > 800 ? "row" : "column"}
       className="translation"
     >
-      <div>
+      <div style={{ minWidth: "44.5%" }}>
         <Source
           question={question}
           setQuestion={actions.setQuestion}
@@ -25,8 +25,8 @@ export const TransBox = () => {
           languages={languages}
         />
       </div>
-      <Divider orientation="vertical" flexItem />
-      <div style={{ position: "relative" }}>
+      <Divider orientation="vertical" flexItem sx={{ minWidth: "1%" }} />
+      <div style={{ position: "relative", minWidth: "44.5%" }}>
         {loading ? (
           <div
             style={{
