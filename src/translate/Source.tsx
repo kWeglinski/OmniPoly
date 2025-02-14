@@ -7,7 +7,7 @@ const IconContainer = styled.div`
   position: absolute;
   top: 0px;
   right: 0px;
-  z-index: 99999;
+  z-index: 1;
 `;
 
 export const Source = ({

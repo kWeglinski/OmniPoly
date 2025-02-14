@@ -1,3 +1,7 @@
+### 0.10.4
+
+- fix: z-index
+
 ### 0.10.3
 
 - dockerfile fix
