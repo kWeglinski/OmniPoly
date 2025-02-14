@@ -1,3 +1,7 @@
+### 0.10.1
+
+- dockerfile fix
+
 ### 0.10.0 
 
 - Added clear button to clear text boxes
