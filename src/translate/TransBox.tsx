@@ -12,6 +12,7 @@ export const TransBox = () => {
     <Stack
       direction={windowWidth > 800 ? "row" : "column"}
       className="translation"
+      sx={{ paddingTop: "10px" }}
     >
       <div style={{ minWidth: "44.5%" }}>
         <Source
