@@ -1,5 +1,7 @@
 # Latest Features:
 
+- Added ability to upload files for translation
+- Added ability to download translations
 - Added clear button to clear text boxes
 - Added auto full display alternative for shorter translations
 - Added option to add words to dictionary for grammar checks
@@ -94,11 +96,16 @@ services:
         - ~/ngramsDir:/ngrams
 ```
 
+# Running and building locally
+
+- Copy `.env.sample` as `.env`
+- Fill in all fields and add `DEV=true`
+- `npm i`
+- `npm run dev`
+- voila! the app should be served at localhost:80
 
 # Roadmap:
 
-- Developer experience - This project was initially built for myself and has unexpectedly grown. I've already started migration to proper state management but some work is still needed there. Then I need to improve ability to run it during development (introduction of BFF has made the setup cumbersome where it shouldn't be). Once that is solved, I'll introduce releases and tags.
-- Clear text area
 - Text workflow - The goal is to have a feeling of single text input across all modules. So we can translate and adjust the same text.
   - ability to switch between translated text and input text in language tool
   - AI tab to prompt AI to modify the input/translated text
