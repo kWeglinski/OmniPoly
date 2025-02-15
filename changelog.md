@@ -1,3 +1,7 @@
+### Unreleased
+
+- Added nightly builds on develop branch
+
 ### 0.10.4
 
 - fix: z-index
