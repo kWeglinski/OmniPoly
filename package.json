@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "node": "node --env-file=.env index.js",
+    "node": "nodemon --env-file=.env index.js",
     "test": "echo \"No tests available yet.\""
   },
   "dependencies": {
@@ -18,10 +18,10 @@
     "@mui/material": "^5.15.20",
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
+    "http-proxy-middleware": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.11",
-    "http-proxy-middleware": "^3.0.3"
+    "styled-components": "^6.1.11"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
@@ -33,6 +33,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "nodemon": "^3.1.9",
     "typescript": "^5.2.2",
     "vite": "^6.0.0",
     "zustand": "^5.0.3"
