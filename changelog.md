@@ -1,6 +1,7 @@
 ### Unreleased
 
 - Added nightly builds on develop branch
+- secops: dependabot - bump vite to 6 
 
 ### 0.10.4
 
