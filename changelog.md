@@ -3,6 +3,7 @@
 - chore: Added nightly builds on develop branch
 - secops: dependabot - bump vite to 6 (resolves 6 dependabot warnings)
 - chore: Github actions updated to create github release and tags 
+- chore: added PR validation GH action
 
 ### 0.10.4
 
