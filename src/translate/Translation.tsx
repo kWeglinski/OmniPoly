@@ -1,5 +1,6 @@
-import { Chip, IconButton, Stack } from "@mui/material";
+import { Chip, IconButton, Stack, Tooltip } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import DownloadForOfflineOutlinedIcon from "@mui/icons-material/DownloadForOfflineOutlined";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import { useState } from "react";
@@ -7,6 +8,19 @@ import { TranslationResponse } from "./types";
 import { copyToClipboard } from "../common/utils";
 
 const ShowFullCutoff = 100;
+
+function downloadTextAsFile(text: string, filename: string): void {
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 const getAlternativesLength = (
   alternatives: TranslationResponse["alternatives"]
@@ -36,23 +50,35 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
 
   const max = answer?.alternatives?.length;
   const translated = getChoice(answer, choice);
-  const hasAlternatives = answer?.alternatives?.length;
+  const hasAlternatives = answer?.alternatives?.length > 0;
   const hasNotableWords = answer.notableWords && answer.notableWords.length > 0;
   const alternativesMaxLength = getAlternativesLength(answer?.alternatives);
 
   return (
     <>
       {translated && (
-        <IconButton
-          sx={{ position: "absolute", right: 0 }}
-          size="small"
-          onClick={() => {
-            copyToClipboard(translated);
-          }}
-        >
-          {/* @ts-expect-error: fontSize exists and works */}
-          <ContentCopyRoundedIcon fontSize="10" />
-        </IconButton>
+        <Stack direction="row" sx={{ position: "absolute", right: 0, top: '-10px' }}>
+          <Tooltip title="Download as file">
+            <IconButton
+              size="small"
+              onClick={() => {
+                downloadTextAsFile(translated, "translation.txt");
+              }}
+            >
+              <DownloadForOfflineOutlinedIcon fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Copy to clipboard">
+            <IconButton
+              size="small"
+              onClick={() => {
+                copyToClipboard(translated);
+              }}
+            >
+              <ContentCopyRoundedIcon fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       )}
       <p className="translated-text">{translated}</p>
       {hasNotableWords &&
@@ -62,7 +88,7 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
           </p>
         ))}
       {hasAlternatives && alternativesMaxLength < ShowFullCutoff && (
-        <Stack direction="row" gap={1} flexWrap={'wrap'}>
+        <Stack direction="row" gap={1} flexWrap={"wrap"}>
           {answer.alternatives.map((alternative, index) => (
             <Chip
               label={alternative}

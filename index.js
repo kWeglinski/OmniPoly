@@ -108,7 +108,7 @@ const handleFormDataPost = (url, req, res, filter) => {
       res.send(filter ? filter(data) : data);
     })
     .catch((error) => {
-      console.log({ error, url });
+      console.log({ error: error.message, url });
       res.send(error);
     });
 };
