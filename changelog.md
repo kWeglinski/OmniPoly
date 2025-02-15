@@ -1,4 +1,4 @@
-### Unreleased
+### 0.11.0 
 
 - chore: Added nightly builds on develop branch
 - secops: dependabot - bump vite to 6 (resolves 6 dependabot warnings)
