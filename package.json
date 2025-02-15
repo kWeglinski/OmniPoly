@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "node": "node --env-file=.env index.js"
+    "node": "node --env-file=.env index.js",
+    "test": "echo \"No tests available yet.\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
