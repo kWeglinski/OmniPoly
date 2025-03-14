@@ -29,6 +29,7 @@ type Grammar = {
   selection: number | null;
   answer: LanguageToolResponse | null;
   error: string;
+  touched: boolean;
 };
 
 export const useGrammar = create<Grammar>(() => ({
@@ -39,13 +40,17 @@ export const useGrammar = create<Grammar>(() => ({
   selection: null,
   answer: null,
   error: "",
+  touched: false,
 }));
 
 export const actions = {
   setQuestion: (text: Grammar["question"]) => {
     const standarisedQuestion = text.replace(/\t/g, "    ");
     localStorage.setItem("question", standarisedQuestion);
-    useGrammar.setState({ question: standarisedQuestion });
+    useGrammar.setState({ question: standarisedQuestion, touched: true });
+  },
+  setTouched: (touched: Grammar["touched"]) => {
+    useGrammar.setState({ touched });
   },
   setLoading: (loading: Grammar["loading"]) => {
     useGrammar.setState({ loading });
@@ -56,6 +61,7 @@ export const actions = {
   setAnswer: (value: Grammar["answer"]) => {
     useGrammar.setState({
       answer: value,
+      touched: false,
       loading: false,
       ...(value ? { error: "" } : {}),
     });

@@ -34,6 +34,7 @@ const LIBRETRANSLATE_LANGUAGES = getLanguages(
 const LANGUAGE_TOOL_LANGUAGES = getLanguages(
   process.env.LANGUAGE_TOOL_LANGUAGES
 );
+const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === 'true'
 
 const maskString = (str) => {
   if (!str || str.length <= 3) {
@@ -55,6 +56,7 @@ THEME: ${THEME}
 API_KEY: ${maskString(LIBRETRANSLATE_API_KEY)} // masked
 LANGUAGE_TOOL_LANGUAGES: ${JSON.stringify(LANGUAGE_TOOL_LANGUAGES)}
 LIBRETRANSLATE_LANGUAGES: ${JSON.stringify(LIBRETRANSLATE_LANGUAGES)}
+DICTIONARY_DISABLED: ${!!DISABLE_DICTIONARY}
 DEV_MODE: ${!!DEV}
 ========================
 `);
@@ -120,6 +122,7 @@ app.get("/api/status", (req, res) => {
     OLLAMA,
     OLLAMA_MODEL,
     THEME,
+    DISABLE_DICTIONARY
   });
 });
 
@@ -173,10 +176,16 @@ app.post("/api/languagetool/check", (req, res) => {
     };
     return filtered;
   };
-  handleFormDataPost(`${LANGUAGE_TOOL}/v2/check`, req, res, filter);
+
+  const targetFilter = DISABLE_DICTIONARY ? filter : false;
+  handleFormDataPost(`${LANGUAGE_TOOL}/v2/check`, req, res, targetFilter);
 });
 
 app.post("/api/languagetool/add", (req, res) => {
+  if (DISABLE_DICTIONARY) {
+    res.status(403).send()
+    return;
+  } 
   try {
     addWord(`${req.body.word}`.toLowerCase());
     console.log("added:", `${req.body.word}`.toLowerCase());
