@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { API, Match } from "./API";
 import { actions, useGrammar } from "../store/grammar";
+import { useSystemStatus } from "../store/status";
 
 type Fix = (start: number, length: number, value: string, idx: number) => void;
 
@@ -39,6 +40,7 @@ const DisplayMatch = ({
   idx: number;
   original: string;
 }) => {
+  const { disableDictionary } = useSystemStatus()
   const fixPos = (value: string) => {
     const nCount =
       original.substring(0, offset).match(/\\[ntrvf]/g)?.length ?? 0;
@@ -75,7 +77,7 @@ const DisplayMatch = ({
             sx={{ marginRight: 1, marginBottom: 0.5, marginTop: 0.5 }}
           />
         ))}
-        {rule.category.id === "TYPOS" && (
+        {!disableDictionary && rule.category.id === "TYPOS" && (
           <>
             <Divider sx={{ mt: 2, mb: 2 }} />
             <Stack sx={{ justifyContent: "center", alignItems: "center" }}>

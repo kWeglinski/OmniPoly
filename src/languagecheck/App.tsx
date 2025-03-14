@@ -34,13 +34,13 @@ export const SelectLanguage = ({ label }: { label?: string }) => {
   );
 };
 
-
 function App() {
   useInitialiseGrammar();
   const { question, language } = useGrammar();
-  const q = useDebounce(question, 1000) as string;
+  const q = useDebounce(question, 1000, () => actions.setTouched(false)) as string;
 
   const check = useCallback((text: string, language: LangChoice) => {
+    console.log("check");
     if (!text) {
       return;
     }

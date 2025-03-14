@@ -1,3 +1,9 @@
+### 0.12.0
+
+- Introduced a new environment variable `DISABLE_DICTIONARY`. When this variable is set to true, the functionality for adding words to the dictionary is disabled.
+- **Enhanced Text Interaction:** In the language tool, highlighted text segments are now interactive. Clicking on these segments opens sidebar suggestion.
+- **Improved Editing Experience:** During the editing process in the language tool, the highlight automatically disappears as it becomes invalid once modifications have been initiated.
+
 ### 0.11.0 
 
 - chore: Added nightly builds on develop branch
