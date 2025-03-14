@@ -4,6 +4,7 @@ import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import { actions, useGrammar } from "../store/grammar";
 import { IconButton, Tooltip } from "@mui/material";
 import { copyToClipboard } from "../common/utils";
+import { i18n } from "../i18n";
 
 const HighlightText = () => {
   const { selection, question: text, answer } = useGrammar();
@@ -72,7 +73,7 @@ export const TextBox = () => {
     <>
       <div className="autosize" data-replicated-value={question}>
         <IconContainer>
-          <Tooltip title="Clear text">
+          <Tooltip title={i18n("Clear text")}>
             <IconButton
               onClick={() => actions.setQuestion("")}
               aria-label="clear"
@@ -81,7 +82,7 @@ export const TextBox = () => {
               <ClearRoundedIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Copy text">
+          <Tooltip title={i18n('Copy to clipboard')}>
             <IconButton
               onClick={() => copyToClipboard(question)}
               aria-label="copy"

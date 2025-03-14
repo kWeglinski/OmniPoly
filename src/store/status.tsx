@@ -23,6 +23,7 @@ export type SystemStatus = {
   languageTool: boolean;
   ollama: boolean;
   theme:  "dark" | "light" | "pole";
+  language: string
 };
 
 export const useSystemStatus = create(() => ({
@@ -31,4 +32,5 @@ export const useSystemStatus = create(() => ({
   languageTool: false,
   ollama: false,
   theme: "dark" as SystemStatus["theme"],
+  language: navigator.language || navigator.userLanguage 
 }));

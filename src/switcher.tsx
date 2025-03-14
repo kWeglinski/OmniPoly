@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Translate from "./translate/App.tsx";
 import LangCheck from "./languagecheck/App.tsx";
 import { useSystemStatus } from "./store/status.tsx";
+import { i18n } from "./i18n/index.ts";
 
 interface CustomTabPanelProps {
   children?: React.ReactNode;
@@ -55,8 +56,10 @@ export const Switcher = () => {
           onChange={(_, val) => tabSetter(val)}
           aria-label="basic tabs example"
         >
-          {libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
-          {languageTool && <Tab label="Language Check" {...a11yProps(1)} />}
+          {libreTranslate && (
+            <Tab label={i18n("translate")} {...a11yProps(0)} />
+          )}
+          {languageTool && <Tab label={i18n('grammar')} {...a11yProps(1)} />}
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Lang, TranslationResponse } from "./types";
 import { actions } from "../store/translate";
 import { actions as snackActions } from "../store/snack";
+import { i18n } from "../i18n";
 
 const IconContainer = styled.div`
   position: absolute;
@@ -63,7 +64,7 @@ export const Source = ({
           <Tooltip
             title={
               <span style={{ textAlign: "center" }}>
-                Upload file. <br /> supported file types:
+                {i18n("Upload file")}. <br /> {i18n("supported file types:")}
                 .txt,.nfo,.html,.htm,.xml,.xhtml,.md
               </span>
             }
@@ -85,7 +86,7 @@ export const Source = ({
             </Button>
           </Tooltip>
 
-          <Tooltip title="Clear text">
+          <Tooltip title={i18n("Clear text")}>
             <IconButton
               onClick={() => setQuestion("")}
               aria-label="copy"
@@ -103,7 +104,7 @@ export const Source = ({
           {question}
         </textarea>
       </div>
-      {hasDl && dl && <Chip label={`detected: ${dl.name}`} />}
+      {hasDl && dl && <Chip label={`${i18n("detected")}: ${dl.name}`} />}
     </>
   );
 };

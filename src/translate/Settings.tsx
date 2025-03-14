@@ -16,6 +16,7 @@ import { PrevChoices } from "./PrevChoices";
 import { actions, useTranslate } from "../store/translate";
 import { useSystemStatus } from "../store/status";
 import { LangChoice } from "./types";
+import { i18n } from "../i18n";
 
 export const Settings = () => {
   const { source, target, languages, useAI } = useTranslate();
@@ -70,7 +71,7 @@ export const Settings = () => {
               variant="outlined"
               color="primary"
               onClick={() => actions.setSource(AUTOMATIC as LangChoice)}
-              label={AUTOMATIC.name}
+              label={i18n(AUTOMATIC.name)}
             />
           )}
           <PrevChoices

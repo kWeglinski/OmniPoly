@@ -6,6 +6,7 @@ import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import { useState } from "react";
 import { TranslationResponse } from "./types";
 import { copyToClipboard } from "../common/utils";
+import { i18n } from "../i18n";
 
 const ShowFullCutoff = 100;
 
@@ -57,8 +58,11 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
   return (
     <>
       {translated && (
-        <Stack direction="row" sx={{ position: "absolute", right: 0, top: '-10px' }}>
-          <Tooltip title="Download as file">
+        <Stack
+          direction="row"
+          sx={{ position: "absolute", right: 0, top: "-10px" }}
+        >
+          <Tooltip title={i18n("Download as file")}>
             <IconButton
               size="small"
               onClick={() => {
@@ -68,7 +72,7 @@ export const Translation = ({ answer }: { answer: TranslationResponse }) => {
               <DownloadForOfflineOutlinedIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Copy to clipboard">
+          <Tooltip title={i18n("Copy to clipboard")}>
             <IconButton
               size="small"
               onClick={() => {

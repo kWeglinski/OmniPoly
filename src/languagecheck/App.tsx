@@ -8,6 +8,7 @@ import { API } from "./API";
 import { Resolution } from "./Resolution";
 import { LangChoice } from "../translate/types";
 import { actions, useGrammar, useInitialiseGrammar } from "../store/grammar";
+import { i18n } from "../i18n";
 
 export const SelectLanguage = ({ label }: { label?: string }) => {
   const { languages, language } = useGrammar();
@@ -33,7 +34,6 @@ export const SelectLanguage = ({ label }: { label?: string }) => {
     </Stack>
   );
 };
-
 
 function App() {
   useInitialiseGrammar();
@@ -64,7 +64,7 @@ function App() {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <SelectLanguage label="language" />
+        <SelectLanguage label={i18n("language")} />
       </div>
       <Stack
         direction={windowWidth > 800 ? "row" : "column"}
