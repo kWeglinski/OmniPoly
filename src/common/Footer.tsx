@@ -16,7 +16,7 @@ export const Footer = () => {
           <p>
             {`frontend by: `}
             <Link
-              href="https://github.com/sth-io"
+              href="https://github.com/kWeglinski"
               target="_blank"
               rel="noopener noreferrer"
             >

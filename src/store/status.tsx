@@ -12,6 +12,7 @@ export const useInitialiseSystemStatus = () => {
           languageTool: data.LANGUAGE_TOOL,
           ollama: data.OLLAMA,
           theme: data.THEME,
+          disableDictionary: data.DISABLE_DICTIONARY
         });
       });
   }, []);
@@ -31,4 +32,5 @@ export const useSystemStatus = create(() => ({
   languageTool: false,
   ollama: false,
   theme: "dark" as SystemStatus["theme"],
+  disableDictionary: false,
 }));

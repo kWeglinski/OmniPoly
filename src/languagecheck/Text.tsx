@@ -6,7 +6,10 @@ import { IconButton, Tooltip } from "@mui/material";
 import { copyToClipboard } from "../common/utils";
 
 const HighlightText = () => {
-  const { selection, question: text, answer } = useGrammar();
+  const { selection, question: text, answer, touched, loading } = useGrammar();
+  if (loading || touched) {
+    return;
+  }
   const highlights = answer?.matches || [];
   let lastIndex = 0;
   const renderedHighlights = [];
@@ -23,15 +26,35 @@ const HighlightText = () => {
 
     // Wrap the highlighted segment with a <span> tag
     const highlightedText = (
-      <span
-        key={i}
-        style={{
-          background: selection === i ? "rgba(255,0,0,1)" : "rgba(255,0,0,0.5",
-        }}
-        onClick={() => actions.setSelection(i)}
-      >
-        {text.substring(nOffset + offset, nOffset + offset + length)}
-      </span>
+      <>
+        <span
+          key={i}
+          style={{
+            position: "relative",
+          }}
+          onClick={() => actions.setSelection(i)}
+        >
+          <div
+            key={i}
+            style={{
+              background:
+                selection === i ? "rgba(255,0,0,1)" : "rgba(255,0,0,0.5",
+              position: "absolute",
+              zIndex: selection === i ? 0 : 900,
+              color: "#fff",
+              left: 0,
+              top: 0,
+              borderRadius: "4px",
+              cursor: 'pointer'
+            }}
+            contentEditable="false"
+            onClick={() => actions.setSelection(i)}
+          >
+            {text.substring(nOffset + offset, nOffset + offset + length)}
+          </div>
+          {text.substring(nOffset + offset, nOffset + offset + length)}
+        </span>
+      </>
     );
     renderedHighlights.push(highlightedText);
 
