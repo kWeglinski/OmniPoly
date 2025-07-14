@@ -1,3 +1,4 @@
+
 name: Docker CI
 
 on:
@@ -18,16 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' 
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: Run tests
-        run: npm run test
+      - name: Build and test with Docker
+        run: |
+          docker build -t omnipoly-test --target build-stage .
+          docker run --rm omnipoly-test npm run test
