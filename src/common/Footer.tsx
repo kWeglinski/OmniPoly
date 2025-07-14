@@ -1,9 +1,16 @@
+
+
+
+
 import { Divider, Link, Stack } from "@mui/material";
 import { useWindowSize } from "./useWindowSize";
+import { useTranslation } from "react-i18next";
 
 export const Footer = () => {
+  const { t } = useTranslation();
   const [windowWidth] = useWindowSize();
   const showDivider = windowWidth > 800;
+
   return (
     <footer>
       <div style={{ padding: "5px 25px" }}>
@@ -11,7 +18,7 @@ export const Footer = () => {
           direction={windowWidth > 800 ? "row" : "column"}
           gap={windowWidth > 800 ? 1 : 0}
         >
-          <p>{`made with ❤`}</p>
+          <p>{t("footer.madeBy", { author: "kWeglinski" })}</p>
           {showDivider && <Divider orientation="vertical" flexItem />}
           <p>
             {`frontend by: `}
@@ -58,3 +65,6 @@ export const Footer = () => {
     </footer>
   );
 };
+
+
+

@@ -1,10 +1,23 @@
+
+
+
+
+
+
+
+
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { addWord, lookupWord } from "./server/words.js";
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
-const dirname = new URL(".", import.meta.url).pathname;
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 80;
@@ -21,9 +34,9 @@ const getLanguages = (langs) => {
   }
 };
 
-const DEV = process.env.DEV
-const LANGUAGE_TOOL = process.env.LANGUAGE_TOOL;
-const LIBRETRANSLATE = process.env.LIBRETRANSLATE;
+const DEV = process.env.DEV;
+const LANGUAGE_TOOL = process.env.LANGUAGETOOL_URL;
+const LIBRETRANSLATE = process.env.LIBRETRANSLATE_URL;
 const OLLAMA = process.env.OLLAMA;
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL;
 const THEME = process.env.THEME;
@@ -34,13 +47,12 @@ const LIBRETRANSLATE_LANGUAGES = getLanguages(
 const LANGUAGE_TOOL_LANGUAGES = getLanguages(
   process.env.LANGUAGE_TOOL_LANGUAGES
 );
-const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === 'true'
+const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === 'true';
 
 const maskString = (str) => {
   if (!str || str.length <= 3) {
     return str;
   }
-
   const visibleChars = str.substring(0, 3);
   const stars = "*".repeat(str.length - 3);
   return visibleChars + stars;
@@ -63,6 +75,10 @@ DEV_MODE: ${!!DEV}
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Import and use translation routes
+import translationRoutes from './server/translations/translationRoutes.js';
+app.use('/api/translations', translationRoutes);
 
 const handleProxyGET = (url, res, filter) => {
   fetch(url)
@@ -183,9 +199,9 @@ app.post("/api/languagetool/check", (req, res) => {
 
 app.post("/api/languagetool/add", (req, res) => {
   if (DISABLE_DICTIONARY) {
-    res.status(403).send()
+    res.status(403).send();
     return;
-  } 
+  }
   try {
     addWord(`${req.body.word}`.toLowerCase());
     console.log("added:", `${req.body.word}`.toLowerCase());
@@ -227,13 +243,20 @@ if (DEV) {
 }
 
 // Serve static files from the React build directory
-app.use(express.static(path.join(dirname, "dist")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 // Handle any requests that don't match the ones above by sending them the index.html file.
 app.get("*", (req, res) => {
-  res.sendFile(path.join(dirname, "dist", "index.html"));
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+
+
+
+
+
