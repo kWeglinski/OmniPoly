@@ -13,16 +13,30 @@ const IconContainer = styled.div`
   z-index: 1;
 `;
 
+const supportedTextExtensions = ['txt', 'nfo', 'html', 'htm', 'xml', 'xhtml', 'md', 'srt'];
+const supportedBinaryExtensions = ['odt', 'docx', 'pptx', 'epub'];
+const allSupportedExtensions = [...supportedTextExtensions, ...supportedBinaryExtensions];
+
 const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event?.target?.files && event.target.files[0];
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      //@ts-expect-error: result exists
-      actions.setQuestion(e.target.result);
-      snackActions.showSnack("File succesully read");
-    };
-    reader.readAsText(file);
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const isTextFormat = supportedTextExtensions.includes(fileExtension || '');
+    const isBinaryFormat = supportedBinaryExtensions.includes(fileExtension || '');
+
+    if (isTextFormat) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        //@ts-expect-error: result exists
+        actions.setQuestion(e.target.result);
+        snackActions.showSnack("File successfully read");
+      };
+      reader.readAsText(file);
+    } else if (isBinaryFormat) {
+      snackActions.showSnack(`File format ${fileExtension} requires server-side processing`);
+    } else {
+      snackActions.showSnack("Unsupported file format");
+    }
   }
 };
 
@@ -64,7 +78,10 @@ export const Source = ({
             title={
               <span style={{ textAlign: "center" }}>
                 Upload file. <br /> supported file types:
-                .txt,.nfo,.html,.htm,.xml,.xhtml,.md
+                {allSupportedExtensions.map(ext => `.${ext}`).join(', ')}<br />
+                <span style={{ fontSize: '0.8em', color: '#666' }}>
+                  {supportedBinaryExtensions.map(ext => `.${ext}`).join(', ')} require server-side processing
+                </span>
               </span>
             }
           >
@@ -78,7 +95,7 @@ export const Source = ({
               <FileUploadOutlinedIcon fontSize="inherit" />
               <VisuallyHiddenInput
                 type="file"
-                accept=".txt,.nfo,.html,.htm,.xml,.xhtml,.md"
+                accept={allSupportedExtensions.map(ext => `.${ext}`).join(',')}
                 onChange={handleFileChange}
                 multiple={false}
               />
