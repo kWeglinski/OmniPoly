@@ -1,0 +1,21 @@
+
+
+
+{
+  "app": {
+    "title": "OmniPoly",
+    "translate": "Translate",
+    "languageCheck": "Language Check"
+  },
+  "footer": {
+    "madeBy": "Made with ❤️ by {{author}}",
+    "sourceCode": "Source code"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "english": "English",
+    "spanish": "Spanish"
+  }
+}
+
+

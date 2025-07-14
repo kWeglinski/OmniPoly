@@ -1,0 +1,23 @@
+
+
+
+
+{
+  "app": {
+    "title": "OmniPoly",
+    "translate": "Traducir",
+    "languageCheck": "Revisión de Idioma"
+  },
+  "footer": {
+    "madeBy": "Hecho con ❤️ por {{author}}",
+    "sourceCode": "Código fuente"
+  },
+  "languageSwitcher": {
+    "label": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español"
+  }
+}
+
+
+

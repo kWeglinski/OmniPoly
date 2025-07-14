@@ -1,3 +1,6 @@
+
+
+
 import { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -5,6 +8,7 @@ import Box from "@mui/material/Box";
 import Translate from "./translate/App.tsx";
 import LangCheck from "./languagecheck/App.tsx";
 import { useSystemStatus } from "./store/status.tsx";
+import { useTranslation } from "react-i18next";
 
 interface CustomTabPanelProps {
   children?: React.ReactNode;
@@ -37,6 +41,7 @@ function a11yProps(index: number) {
 }
 
 export const Switcher = () => {
+  const { t } = useTranslation();
   const { libreTranslate, languageTool } = useSystemStatus();
   const initTab = parseInt(localStorage.getItem("tab") ?? "0");
 
@@ -53,10 +58,10 @@ export const Switcher = () => {
           centered
           value={tab}
           onChange={(_, val) => tabSetter(val)}
-          aria-label="basic tabs example"
+          aria-label={t("app.title")}
         >
-          {libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
-          {languageTool && <Tab label="Language Check" {...a11yProps(1)} />}
+          {libreTranslate && <Tab label={t("app.translate")} {...a11yProps(0)} />}
+          {languageTool && <Tab label={t("app.languageCheck")} {...a11yProps(1)} />}
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>
@@ -68,3 +73,5 @@ export const Switcher = () => {
     </>
   );
 };
+
+
