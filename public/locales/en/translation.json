@@ -1,0 +1,9 @@
+{
+  "language": "Language",
+  "welcome": "Welcome to our application!",
+  "settings": "Settings",
+  "sourceLanguage": "Source Language",
+  "targetLanguage": "Target Language",
+  "translate": "Translate",
+  "history": "History"
+}

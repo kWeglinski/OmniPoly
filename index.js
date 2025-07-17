@@ -126,6 +126,54 @@ app.get("/api/status", (req, res) => {
   });
 });
 
+const translationCache = new Map();
+const fs = require('fs').promises;
+const path = require('path');
+
+app.get("/api/i18n/:lng", async (req, res) => {
+  const { lng } = req.params;
+  const cachePath = path.join(dirname, `translations/${lng}.json`);
+
+  try {
+    // Try to serve cached translation first
+    const cachedData = await fs.readFile(cachePath, 'utf8');
+    res.json(JSON.parse(cachedData));
+  } catch (cacheError) {
+    if (LIBRETRANSLATE) {
+      try {
+        // Fetch from LibreTranslate
+        const response = await fetch(`${LIBRETRANSLATE}/translate`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            q: require('./translations/en.json'),
+            source: 'en',
+            target: lng,
+            format: 'text',
+            api_key: LIBRETRANSLATE_API_KEY
+          })
+        });
+        
+        const translations = await response.json();
+        const translatedData = Object.fromEntries(
+          Object.entries(translations.translatedText).map(([key, value]) => [key, value])
+        );
+
+        // Cache the translation
+        await fs.mkdir(path.dirname(cachePath), { recursive: true });
+        await fs.writeFile(cachePath, JSON.stringify(translatedData));
+        
+        res.json(translatedData);
+      } catch (fetchError) {
+        console.error('Translation fetch failed:', fetchError);
+        res.status(500).send('Translation service unavailable');
+      }
+    } else {
+      res.status(404).send('Translation not found');
+    }
+  }
+});
+
 app.get("/api/libretranslate/languages", (req, res) => {
   const filter = (data) => {
     if (LIBRETRANSLATE_LANGUAGES.length === 0) {

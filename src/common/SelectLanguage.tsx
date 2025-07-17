@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { useWindowSize } from "./useWindowSize";
 import { Lang, LangChoice } from "../translate/types";
+import { useTranslation } from 'react-i18next';
 
 export const SelectLanguage = ({
   languages,
@@ -15,6 +16,7 @@ export const SelectLanguage = ({
   setValue: (value: LangChoice) => void;
   label?: string;
 }) => {
+  const { t } = useTranslation();
   const [windowWidth] = useWindowSize();
   if (!languages) {
     return null;
@@ -27,12 +29,12 @@ export const SelectLanguage = ({
         options={languages}
         size="small"
         getOptionLabel={(option) =>
-          option.longCode ? `${option.name} - ${option.longCode}` : option.name
+          option.longCode ? `${t(option.name)} - ${option.longCode}` : t(option.name)
         }
         //@ts-expect-error: this is fine for now
         onChange={(e, value) => setValue(value)}
         value={value}
-        renderInput={(params) => <TextField {...params} label={label} />}
+        renderInput={(params) => <TextField {...params} label={t(label || 'language')} />}
       />
     </Stack>
   );

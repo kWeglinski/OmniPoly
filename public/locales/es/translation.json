@@ -1,0 +1,9 @@
+{
+  "language": "Idioma",
+  "welcome": "¡Bienvenido a nuestra aplicación!",
+  "settings": "Configuración",
+  "sourceLanguage": "Idioma de origen",
+  "targetLanguage": "Idioma de destino",
+  "translate": "Traducir",
+  "history": "Historial"
+}
