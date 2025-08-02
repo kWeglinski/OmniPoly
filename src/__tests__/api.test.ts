@@ -17,8 +17,8 @@ describe('API module', () => {
 
   describe('getTranslation', () => {
     it('should call fetch with correct parameters', async () => {
-      const source: LangChoice = { name: 'English', code: 'en', targets: [] };
-      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [] };
+      const source: LangChoice = { name: 'English', code: 'en', targets: [], history: [] };
+      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [], history: [] };
       const text = 'Hello';
 
       const api = API();
@@ -39,8 +39,8 @@ describe('API module', () => {
     });
 
     it('should return parsed response', async () => {
-      const source: LangChoice = { name: 'English', code: 'en', targets: [] };
-      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [] };
+      const source: LangChoice = { name: 'English', code: 'en', targets: [], history: [] };
+      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [], history: [] };
       const text = 'Hello';
 
       const api = API();
@@ -54,8 +54,8 @@ describe('API module', () => {
         Promise.reject(new Error('Network error'))
       );
 
-      const source: LangChoice = { name: 'English', code: 'en', targets: [] };
-      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [] };
+      const source: LangChoice = { name: 'English', code: 'en', targets: [], history: [] };
+      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [], history: [] };
       const text = 'Hello';
 
       const api = API();
@@ -79,8 +79,8 @@ describe('API module', () => {
     });
 
     it('should call fetch with correct parameters', async () => {
-      const source: LangChoice = { name: 'English', code: 'en', targets: [] };
-      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [] };
+      const source: LangChoice = { name: 'English', code: 'en', targets: [], history: [] };
+      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [], history: [] };
       const text = 'Hello';
 
       const api = API();
@@ -93,8 +93,8 @@ describe('API module', () => {
     });
 
     it('should return parsed response with notable words', async () => {
-      const source: LangChoice = { name: 'English', code: 'en', targets: [] };
-      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [] };
+      const source: LangChoice = { name: 'English', code: 'en', targets: [], history: [] };
+      const target: LangChoice = { name: 'Spanish', code: 'es', targets: [], history: [] };
       const text = 'Hello';
 
       const api = API();
