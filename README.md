@@ -52,9 +52,9 @@ services:
       # To limit language options for translations provide an array of ISO 639 language codes
       LIBRETRANSLATE_LANGUAGES: ["pl","en"] # optional
       # To limit language options for text check provide an array of long tags (ISO 639/ISO-3166) also known as language-Region code.
-      LANGUAGE_TOOL_LANGUAGES: ["pl-PL","en-GB"] # optional
+      LANGUAGE_TOOL_LANGUAGES=["pl-PL","en-GB"] # optional
       # To disable "add word" to dicationary
-      DISABLE_DICTIONARY: true # optional
+      DISABLE_DICTIONARY=true # optional
     ports:
       - 80:80
     image: kweg/omnipoly:latest
