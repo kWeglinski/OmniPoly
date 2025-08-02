@@ -1,4 +1,4 @@
-# Latest Features:
+# Latest Features
 
 - Added ability to upload files for translation
 - Added ability to download translations
@@ -11,45 +11,46 @@
 
 # OmniPoly
 
-Welcome to a solution for translation and language enhancement tool. This project integrates Libre Translate for accurate translations, LanguageTool for grammar and style checks, and AI Translation for modern touch of sentiment analysis and interesting sentences extraction.
+Welcome to **OmniPoly**! This project is a comprehensive solution for translation and language enhancement. It integrates:
 
-Key features include:
+## Key Features
 - Translation: Text translation across multiple languages (see: [libretranslate](https://github.com/LibreTranslate/LibreTranslate)).
 - Grammar Checking: Ensures your text is not only translated but also reads well with proper grammar and style (see: [languagetool](https://github.com/languagetool-org/languagetool)).
 - AI-Powered Insights: Utilizes Large Language Models to analyze sentiments and extract interesting sentences, adding depth to your translations (see: [ollama](https://github.com/ollama/ollama)).
 
-The project started with the fact that I didn't like the standard app coming with Libre Translate (i.e. it didn't remember my previous choices). So I've decided to make my own. Eventually I've found out about self-hosted LanguageTool, and then I've learned that it does not have any frontend...
+The project started because I wasn't satisfied with the standard app that comes with Libre Translate (it didn't remember my previous choices). I decided to create my own solution. Eventually, I discovered self-hosted LanguageTool and learned that it lacked a frontend interface.
 
 <p align="center">
-  <img src="docs/screenshot.png" alt="pole_translate" align="center">
+  <img src="docs/screenshot.png" alt="OmniPoly main interface" align="center">
 </p>
 
 <p align="center">
-  <img src="docs/with_errors.png" alt="pole_translate" align="center">
+  <img src="docs/with_errors.png" alt="Grammar checking with errors highlighted" align="center">
 </p>
 <p align="center">
-  <img src="docs/without_errors.png" alt="pole_translate" align="center">
+  <img src="docs/without_errors.png" alt="Grammar checking with corrections applied" align="center">
 </p>
 
-## How to run: Docker
+## How to Run with Docker
 
 The most recommended way to start it up is to use Docker.
 
-Here's a sample docker compose:
+### Sample Docker Compose Configuration
 
-```
-  OmniPoly:
+```yaml
+services:
+  omnipoly:
     restart: unless-stopped
     environment:
       LANGUAGE_TOOL: https://your.languagetool.instance
       LIBRETRANSLATE: https://your.libretranslate.instance
-      LIBRETRANSLATE_API_KEY: 'your_API_key' # use if your instance requires API key.
+      LIBRETRANSLATE_API_KEY: 'your_API_key' # use if your instance requires API key
       OLLAMA: https://your.ollama.instance
       OLLAMA_MODEL: model_name
       # pick one of: 'pole' | 'light' | 'dark' 
       THEME: 'dark'
       # To limit language options for translations provide an array of ISO 639 language codes
-      LIBRETRANSLATE_LANGUAGES=["pl","en"] # optional
+      LIBRETRANSLATE_LANGUAGES: ["pl","en"] # optional
       # To limit language options for text check provide an array of long tags (ISO 639/ISO-3166) also known as language-Region code.
       LANGUAGE_TOOL_LANGUAGES=["pl-PL","en-GB"] # optional
       # To disable "add word" to dicationary
@@ -69,13 +70,13 @@ The project is designed in such a way that it will not display features that are
 
 #### Libre translate
 
-```
+```yaml
 services:
   libretranslate:
     tty: true
     stdin_open: true
     ports:
-      - PORT:5000
+      - "5000:5000"
     environment:
       - host=your.libretranslate.instance
     image: libretranslate/libretranslate
@@ -89,7 +90,7 @@ services:
       restart: unless-stopped
       image: elestio/languagetool:latest
       ports:
-      - PORT:8010
+      - "8010:8010"
       environment:
       - langtool_languageModel=/ngrams
       - Java_Xms=512m
@@ -98,15 +99,19 @@ services:
         - ~/ngramsDir:/ngrams
 ```
 
-# Running and building locally
+## Running and Building Locally
 
-- Copy `.env.sample` as `.env`
-- Fill in all fields and add `DEV=true`
-- `npm i`
-- `npm run dev`
-- voila! the app should be served at localhost:80
+To run OmniPoly locally, follow these steps:
 
-# Roadmap:
+1. Copy `.env.sample` as `.env`
+2. Fill in all fields and add `DEV=true`
+3. Install dependencies: `npm i`
+4. Start development server: `npm run dev`
+5. The app should be served at [http://localhost:80](http://localhost:80)
+
+> **Note**: The application can also be accessed at the ports mentioned in the runtime information: [http://localhost:54427](http://localhost:54427) or [http://localhost:57175](http://localhost:57175).
+
+## Roadmap
 
 - Text workflow - The goal is to have a feeling of single text input across all modules. So we can translate and adjust the same text.
   - ability to switch between translated text and input text in language tool

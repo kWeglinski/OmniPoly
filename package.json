@@ -1,7 +1,7 @@
 {
   "name": "sth-libretranslate",
   "private": true,
-  "version": "0.12.0",
+  "version": "0.13.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run node\" \"vite\"",
@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "node": "nodemon --env-file=.env index.js",
-    "test": "echo \"No tests available yet.\""
+    "test": "jest --clearCache && jest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -24,6 +24,7 @@
     "styled-components": "^6.1.11"
   },
   "devDependencies": {
+    "@types/jest": "^29.4.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -33,7 +34,9 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "jest": "^29.4.0",
     "nodemon": "^3.1.9",
+    "ts-jest": "^29.4.0",
     "typescript": "^5.2.2",
     "vite": "^6.0.0",
     "zustand": "^5.0.3"
