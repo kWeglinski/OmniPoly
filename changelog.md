@@ -1,3 +1,11 @@
+### 0.14.0
+
+- Fix: enforce font color (chrome bug) on text-area, based on theme. No more dark text on dark bg
+- Feat: moved to rich-textarea library to not re-invent the wheel on text area styling.
+    This also allowed:
+    - Better styling for error highliht
+    - Additional tooltip with quick peek of the issue and and quick (up to 4) click to fix resolutions (sidebar gives more options if language tool provides)
+
 ### 0.12.0
 
 - Introduced a new environment variable `DISABLE_DICTIONARY`. When this variable is set to true, the functionality for adding words to the dictionary is disabled.
