@@ -1,4 +1,4 @@
-import { Button, Chip, IconButton, Tooltip } from "@mui/material";
+import { Button, Chip, IconButton, Tooltip, useTheme } from "@mui/material";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import styled from "styled-components";
@@ -70,6 +70,8 @@ export const Source = ({
     languages.find(
       (lang: Lang) => lang.code === answer?.detectedLanguage?.language
     );
+  const theme = useTheme();
+  console.log({ theme });
   return (
     <>
       <div className="autosize" data-replicated-value={question}>
@@ -116,6 +118,7 @@ export const Source = ({
           placeholder="Your text here..."
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          style={{ color: theme.palette.text.primary }}
         >
           {question}
         </textarea>

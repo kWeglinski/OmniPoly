@@ -25,27 +25,20 @@ const DisplayMatch = ({
   context,
   replacements,
   shortMessage,
-  offset,
-  length,
   fix,
   selected,
   setSelection,
   idx,
   rule,
-  original,
 }: Match & {
   fix: Fix;
   selected: boolean;
   setSelection: () => void;
   idx: number;
-  original: string;
 }) => {
-  const { disableDictionary } = useSystemStatus()
-  const fixPos = (value: string) => {
-    const nCount =
-      original.substring(0, offset).match(/\\[ntrvf]/g)?.length ?? 0;
-    fix(offset + nCount, length, value, idx);
-  };
+  const { disableDictionary } = useSystemStatus();
+  const { question, answer, selection } = useGrammar();
+  
   return (
     <Accordion expanded={selected}>
       <AccordionSummary
@@ -71,9 +64,30 @@ const DisplayMatch = ({
         <Divider sx={{ mt: 2, mb: 2 }} />
         {replacements.map((repl: { value: string }) => (
           <Chip
+            key={repl.value}
             size="small"
             label={repl.value}
-            onClick={() => fixPos(repl.value)}
+            onClick={() => {
+              if (!answer || selection === null) {
+                return;
+              }
+              
+              const match = answer.matches[selection];
+              if (!match) {
+                return;
+              }
+              
+              // Count newline-like characters (\n, \t, etc.) before the offset
+              const nCount = match.context.text.substring(0, match.context.offset).match(/\\[ntrvf]/g)?.length ?? 0;
+              const adjustedStart = match.context.offset + nCount;
+              
+              // Apply the fix to the question text
+              const fixedQuestion = `${question.substring(0, adjustedStart)}${repl.value}${question.substring(adjustedStart + match.context.length)}`;
+              
+              // Update the state
+              actions.setQuestion(fixedQuestion);
+              actions.popAnswer(selection);
+            }}
             sx={{ marginRight: 1, marginBottom: 0.5, marginTop: 0.5 }}
           />
         ))}
@@ -153,7 +167,6 @@ export const Resolution = () => {
           selected={selection === i}
           setSelection={() => actions.setSelection(i)}
           idx={i}
-          original={original}
         />
       ))}
     </div>
