@@ -2,12 +2,12 @@ import { useCallback, useEffect } from "react";
 import { Autocomplete, Divider, Stack, TextField } from "@mui/material";
 import "./App.css";
 import { useDebounce } from "../common/useDebounce";
-import { TextBox } from "./Text";
 import { useWindowSize } from "../common/useWindowSize";
 import { API } from "./API";
 import { Resolution } from "./Resolution";
 import { LangChoice } from "../translate/types";
 import { actions, useGrammar, useInitialiseGrammar } from "../store/grammar";
+import { Content } from "./Content";
 
 export const SelectLanguage = ({ label }: { label?: string }) => {
   const { languages, language } = useGrammar();
@@ -37,7 +37,7 @@ export const SelectLanguage = ({ label }: { label?: string }) => {
 function App() {
   useInitialiseGrammar();
   const { question, language } = useGrammar();
-  const q = useDebounce(question, 1000, () => actions.setTouched(false)) as string;
+  const q = useDebounce(question, 1000) as string;
 
   const check = useCallback((text: string, language: LangChoice) => {
     console.log("check");
@@ -51,7 +51,7 @@ function App() {
         actions.setAnswer(data);
       })
       .catch((e) => actions.setError(e.message));
-  }, []);
+  }, [actions, API]);
 
   useEffect(() => {
     if (q.length > 1 && language) {
@@ -71,7 +71,8 @@ function App() {
         className="translation"
       >
         <div>
-          <TextBox />
+          <Content />
+          {/* <TextBox /> */}
         </div>
         <Divider orientation="vertical" flexItem />
         <div style={{ position: "relative" }}>

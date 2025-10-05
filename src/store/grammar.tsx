@@ -53,7 +53,7 @@ export const actions = {
     useGrammar.setState({ touched });
   },
   setLoading: (loading: Grammar["loading"]) => {
-    useGrammar.setState({ loading });
+    useGrammar.setState({ loading, answer: null });
   },
   swapLangs: () => {
     useGrammar.setState({ loading: true });
@@ -86,5 +86,33 @@ export const actions = {
       matches: answer.matches.filter((_, i) => i !== idx),
     };
     useGrammar.setState({ answer: newAnswer });
+  },
+  fixPos: (value: string, index?: number) => {
+    const { question, answer, selection } = useGrammar.getState();
+    const target = index ?? selection;
+    if (!answer || target === null) {
+      return;
+    }
+
+    const match = answer.matches[target];
+    if (!match) {
+      return;
+    }
+
+    // Count newline-like characters (\n, \t, \r, \v, \f) before the offset
+    const nCount =
+      question.substring(0, match.context.offset).match(/\\[ntrvf]/g)?.length ??
+      0;
+    const adjustedStart = match.context.offset + nCount;
+
+    // Apply the fix to the question text
+    const fixedQuestion = `${question.substring(
+      0,
+      adjustedStart
+    )}${value}${question.substring(adjustedStart + match.context.length)}`;
+
+    // Update the state
+    actions.setQuestion(fixedQuestion);
+    actions.popAnswer(target);
   },
 };
