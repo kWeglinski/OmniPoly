@@ -36,9 +36,28 @@ function a11yProps(index: number) {
   };
 }
 
+const ToolMap: { [key: number]: string } = {
+  0: "libreTranslate",
+  1: "languageTool",
+};
+
+const getInitTab = (
+  browserTab: number,
+  tools: Record<string, boolean>
+) => {
+  const tool = ToolMap[browserTab];
+  if (!tool || !tools[tool]) {
+    const newTarget = tools.libreTranslate ? 0 : 1;
+    localStorage.setItem("tab", newTarget.toString());
+    return newTarget;
+  }
+  return browserTab;
+};
+
 export const Switcher = () => {
   const { libreTranslate, languageTool } = useSystemStatus();
-  const initTab = parseInt(localStorage.getItem("tab") ?? "0");
+  const browserTab = parseInt(localStorage.getItem("tab") ?? "-1");
+  const initTab = getInitTab(browserTab, { libreTranslate, languageTool });
 
   const [tab, setTab] = useState(initTab);
   const tabSetter = (val: number) => {
@@ -55,8 +74,12 @@ export const Switcher = () => {
           onChange={(_, val) => tabSetter(val)}
           aria-label="basic tabs example"
         >
-          {libreTranslate && <Tab label="Translate" {...a11yProps(0)} />}
-          {languageTool && <Tab label="Language Check" {...a11yProps(1)} />}
+          {libreTranslate && (
+            <Tab value={0} label="Translate" {...a11yProps(0)} />
+          )}
+          {languageTool && (
+            <Tab value={1} label="Language Check" {...a11yProps(1)} />
+          )}
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>
