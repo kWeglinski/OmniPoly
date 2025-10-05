@@ -1,3 +1,7 @@
+### 0.14.1
+
+- Fix: when user wanted to use only libretranslate the whole app crashed due to invalid tab choices.
+
 ### 0.14.0
 
 - Fix: enforce font color (chrome bug) on text-area, based on theme. No more dark text on dark bg
