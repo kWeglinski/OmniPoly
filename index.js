@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-undef
+/* global process */
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
@@ -68,7 +70,10 @@ const handleProxyGET = (url, res, filter) => {
   fetch(url)
     .then((data) => data.json())
     .then((data) => res.send(filter ? filter(data) : data))
-    .catch((error) => res.send(error));
+    .catch((error) => {
+      console.error("[PROXY GET ERROR]", error);
+      res.status(500).send('Internal server error');
+    });
 };
 
 const handleProxyPost = (url, req, res) => {
@@ -85,7 +90,7 @@ const handleProxyPost = (url, req, res) => {
     })
     .catch((error) => {
       console.log({ error, url });
-      res.send(error);
+      res.status(500).send('Internal server error');
     });
 };
 
@@ -111,7 +116,7 @@ const handleFormDataPost = (url, req, res, filter) => {
     })
     .catch((error) => {
       console.log({ error: error.message, url });
-      res.send(error);
+      res.status(500).send('Internal server error');
     });
 };
 
