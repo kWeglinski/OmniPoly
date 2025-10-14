@@ -84,19 +84,32 @@ services:
 
 #### Language tool
 
-```
+```yaml
 services:
   languagetool:
-      restart: unless-stopped
-      image: elestio/languagetool:latest
-      ports:
-      - "8010:8010"
-      environment:
-      - langtool_languageModel=/ngrams
-      - Java_Xms=512m
-      - Java_Xmx=1g
-      volumes:
-        - ~/ngramsDir:/ngrams
+    image: meyay/languagetool:latest
+    container_name: languagetool
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:exec
+    cap_drop:
+      - ALL
+    cap_add:
+      - CAP_CHOWN
+      - CAP_DAC_OVERRIDE
+      - CAP_SETUID
+      - CAP_SETGID
+    security_opt:
+      - no-new-privileges
+    ports:
+      - 8081:8081
+    environment:
+      MAP_UID: 783
+      MAP_GID: 783
+    volumes:
+      - ~/ngrams:/ngrams
+      - ~/fasttext:/fasttext
 ```
 
 ## Running and Building Locally
