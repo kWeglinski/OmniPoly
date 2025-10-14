@@ -1,3 +1,7 @@
+### 0.14.2
+
+- Chore: suggest different backend for languagetool. Apparently the one in readme wasn't the best.
+
 ### 0.14.1
 
 - Fix: when user wanted to use only libretranslate the whole app crashed due to invalid tab choices.
