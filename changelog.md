@@ -1,3 +1,9 @@
+### 0.14.3
+
+- Fix: during the creation of improved fix tooltip I've introduced a bug that completely broke position where text is fixed. This is fixed now. 
+- Feat: added picky level in language tool (use an ENV to enable it)
+- Feat: added DEBUG mode to log all requests
+
 ### 0.14.2
 
 - Chore: suggest different backend for languagetool. Apparently the one in readme wasn't the best.

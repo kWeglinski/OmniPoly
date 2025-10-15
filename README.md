@@ -43,6 +43,8 @@ services:
     restart: unless-stopped
     environment:
       LANGUAGE_TOOL: https://your.languagetool.instance
+      # if you want to enable picky mode in languagetool
+      LANGUAGE_TOOL_PICKY: true
       LIBRETRANSLATE: https://your.libretranslate.instance
       LIBRETRANSLATE_API_KEY: 'your_API_key' # use if your instance requires API key
       OLLAMA: https://your.ollama.instance
@@ -52,9 +54,10 @@ services:
       # To limit language options for translations provide an array of ISO 639 language codes
       LIBRETRANSLATE_LANGUAGES: ["pl","en"] # optional
       # To limit language options for text check provide an array of long tags (ISO 639/ISO-3166) also known as language-Region code.
-      LANGUAGE_TOOL_LANGUAGES=["pl-PL","en-GB"] # optional
+      LANGUAGE_TOOL_LANGUAGES: ["pl-PL","en-GB"] # optional
       # To disable "add word" to dicationary
-      DISABLE_DICTIONARY=true # optional
+      DISABLE_DICTIONARY: true # optional
+      DEBUG: false # set to true to log text sent to tools and it's raw responses
     ports:
       - 80:80
     image: kweg/omnipoly:latest
