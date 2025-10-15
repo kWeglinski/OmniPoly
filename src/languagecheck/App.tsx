@@ -72,7 +72,6 @@ function App() {
       >
         <div>
           <Content />
-          {/* <TextBox /> */}
         </div>
         <Divider orientation="vertical" flexItem />
         <div style={{ position: "relative" }}>

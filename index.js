@@ -23,12 +23,14 @@ const getLanguages = (langs) => {
   }
 };
 
-const DEV = process.env.DEV
+const DEV = process.env.DEV;
 const LANGUAGE_TOOL = process.env.LANGUAGE_TOOL;
+const LANGUAGE_TOOL_PICKY = process.env.LANGUAGE_TOOL_PICKY;
 const LIBRETRANSLATE = process.env.LIBRETRANSLATE;
 const OLLAMA = process.env.OLLAMA;
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL;
 const THEME = process.env.THEME;
+const DEBUG = process.env.DEBUG;
 const LIBRETRANSLATE_API_KEY = process.env.LIBRETRANSLATE_API_KEY;
 const LIBRETRANSLATE_LANGUAGES = getLanguages(
   process.env.LIBRETRANSLATE_LANGUAGES
@@ -36,7 +38,7 @@ const LIBRETRANSLATE_LANGUAGES = getLanguages(
 const LANGUAGE_TOOL_LANGUAGES = getLanguages(
   process.env.LANGUAGE_TOOL_LANGUAGES
 );
-const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === 'true'
+const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === "true";
 
 const maskString = (str) => {
   if (!str || str.length <= 3) {
@@ -60,6 +62,7 @@ LANGUAGE_TOOL_LANGUAGES: ${JSON.stringify(LANGUAGE_TOOL_LANGUAGES)}
 LIBRETRANSLATE_LANGUAGES: ${JSON.stringify(LIBRETRANSLATE_LANGUAGES)}
 DICTIONARY_DISABLED: ${!!DISABLE_DICTIONARY}
 DEV_MODE: ${!!DEV}
+DEBUG_MODE: ${!!DEBUG} 
 ========================
 `);
 
@@ -67,16 +70,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const handleProxyGET = (url, res, filter) => {
+  if (DEBUG) {
+    console.log(`Calling: ${url}`);
+  }
   fetch(url)
     .then((data) => data.json())
-    .then((data) => res.send(filter ? filter(data) : data))
+    .then((data) => {
+      if (DEBUG) {
+        console.log(data);
+      }
+      return res.send(filter ? filter(data) : data);
+    })
     .catch((error) => {
       console.error("[PROXY GET ERROR]", error);
-      res.status(500).send('Internal server error');
+      res.status(500).send("Internal server error");
     });
 };
 
 const handleProxyPost = (url, req, res) => {
+  if (DEBUG) {
+    console.log(`Calling: ${url}`);
+  }
   fetch(url, {
     method: "POST",
     body: JSON.stringify(req.body),
@@ -86,15 +100,18 @@ const handleProxyPost = (url, req, res) => {
       return data.json();
     })
     .then((data) => {
+      if (DEBUG) {
+        console.log(data);
+      }
       res.send(data);
     })
     .catch((error) => {
       console.log({ error, url });
-      res.status(500).send('Internal server error');
+      res.status(500).send("Internal server error");
     });
 };
 
-const handleFormDataPost = (url, req, res, filter) => {
+const handleFormDataPost = (url, req, res, filter, additionalData) => {
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
     Accept: "application/json",
@@ -105,6 +122,15 @@ const handleFormDataPost = (url, req, res, filter) => {
   keys.forEach((key) => {
     formData.append(key, req.body[key]);
   });
+  if (additionalData) {
+    Object.keys(additionalData).forEach((key) => {
+      formData.append(key, additionalData[key]);
+    });
+  }
+  if (DEBUG) {
+    console.log(`Calling: ${url}`);
+    console.log({ formData });
+  }
   return fetch(url, {
     method: "POST",
     headers: headers,
@@ -112,11 +138,14 @@ const handleFormDataPost = (url, req, res, filter) => {
   })
     .then((data) => data.json())
     .then((data) => {
+      if (DEBUG) {
+        console.log(data);
+      }
       res.send(filter ? filter(data) : data);
     })
     .catch((error) => {
       console.log({ error: error.message, url });
-      res.status(500).send('Internal server error');
+      res.status(500).send("Internal server error");
     });
 };
 
@@ -127,7 +156,7 @@ app.get("/api/status", (req, res) => {
     OLLAMA,
     OLLAMA_MODEL,
     THEME,
-    DISABLE_DICTIONARY
+    DISABLE_DICTIONARY,
   });
 });
 
@@ -183,14 +212,24 @@ app.post("/api/languagetool/check", (req, res) => {
   };
 
   const targetFilter = DISABLE_DICTIONARY ? filter : false;
-  handleFormDataPost(`${LANGUAGE_TOOL}/v2/check`, req, res, targetFilter);
+  handleFormDataPost(
+    `${LANGUAGE_TOOL}/v2/check`,
+    req,
+    res,
+    targetFilter,
+    LANGUAGE_TOOL_PICKY
+      ? {
+          level: "picky",
+        }
+      : {}
+  );
 });
 
 app.post("/api/languagetool/add", (req, res) => {
   if (DISABLE_DICTIONARY) {
-    res.status(403).send()
+    res.status(403).send();
     return;
-  } 
+  }
   try {
     addWord(`${req.body.word}`.toLowerCase());
     console.log("added:", `${req.body.word}`.toLowerCase());

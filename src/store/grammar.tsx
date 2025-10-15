@@ -87,32 +87,17 @@ export const actions = {
     };
     useGrammar.setState({ answer: newAnswer });
   },
-  fixPos: (value: string, index?: number) => {
-    const { question, answer, selection } = useGrammar.getState();
-    const target = index ?? selection;
-    if (!answer || target === null) {
-      return;
-    }
-
-    const match = answer.matches[target];
-    if (!match) {
-      return;
-    }
-
-    // Count newline-like characters (\n, \t, \r, \v, \f) before the offset
+  fixPos: (value: string, index: number) => {
+    const { question, answer } = useGrammar.getState();
+    const match = answer?.matches[index];
+    const offset = match?.offset || 0;
     const nCount =
-      question.substring(0, match.context.offset).match(/\\[ntrvf]/g)?.length ??
-      0;
-    const adjustedStart = match.context.offset + nCount;
-
-    // Apply the fix to the question text
-    const fixedQuestion = `${question.substring(
-      0,
-      adjustedStart
-    )}${value}${question.substring(adjustedStart + match.context.length)}`;
-
-    // Update the state
-    actions.setQuestion(fixedQuestion);
-    actions.popAnswer(target);
+      question.substring(0, offset).match(/\\[ntrvf]/g)?.length ?? 0;
+    const start = offset + nCount;
+    const fixed = `${question.substring(0, start)}${value}${question.substring(
+      start + (match?.length || 0)
+    )}`;
+    actions.setQuestion(fixed);
+    actions.popAnswer(index);
   },
 };
