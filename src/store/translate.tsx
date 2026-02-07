@@ -8,6 +8,7 @@ import {
 import { History, Lang, LangChoice } from "../translate/types";
 import { useEffect } from "react";
 import { API } from "../translate/API";
+import { useShared, setQuestion } from "./shared";
 
 export const useInitialiseTranslate = () => {
   useEffect(() => {
@@ -24,6 +25,11 @@ export const useInitialiseTranslate = () => {
       });
   }, []);
 };
+
+// Subscribe to shared question changes
+useShared.subscribe((state) => {
+  useTranslate.setState({ question: state.question });
+});
 
 export const withHistory =
   (key: string, store: LangChoice) => (value: Lang) => {
@@ -60,7 +66,7 @@ export type Translate = {
 
 export const useTranslate = create<Translate>(() => ({
   loading: false,
-  question: localStorage.getItem("question") ?? "",
+  question: useShared.getState().question,
   answer: {
     translatedText: "",
     alternatives: [],
@@ -86,7 +92,7 @@ export const actions = {
   setUseAI: (val: boolean) => useTranslate.setState({ useAI: val }),
   setLoading: (loading: boolean) => useTranslate.setState({ loading }),
   setQuestion: (q: string) => {
-    localStorage.setItem("question", q);
+    setQuestion(q);
     useTranslate.setState({ question: q });
   },
   setLanguages: (languages: Translate["languages"]) =>
