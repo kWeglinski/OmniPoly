@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { useEffect } from "react";
 import { API, LanguageToolResponse } from "../languagecheck/API";
 import { LangChoice } from "../translate/types";
+import { useShared, setQuestion } from "./shared";
 
 export const useInitialiseGrammar = () => {
   useEffect(() => {
@@ -34,7 +35,7 @@ type Grammar = {
 
 export const useGrammar = create<Grammar>(() => ({
   loading: false,
-  question: localStorage.getItem("question") ?? "",
+  question: useShared.getState().question,
   languages: [],
   language: getLang(),
   selection: null,
@@ -43,11 +44,16 @@ export const useGrammar = create<Grammar>(() => ({
   touched: false,
 }));
 
+// Subscribe to shared question changes
+useShared.subscribe((state) => {
+  useGrammar.setState({ question: state.question });
+});
+
 export const actions = {
   setQuestion: (text: Grammar["question"]) => {
     const standarisedQuestion = text.replace(/\t/g, "    ");
-    localStorage.setItem("question", standarisedQuestion);
-    useGrammar.setState({ question: standarisedQuestion, touched: true });
+    setQuestion(standarisedQuestion);
+    useGrammar.setState({ touched: true });
   },
   setTouched: (touched: Grammar["touched"]) => {
     useGrammar.setState({ touched });

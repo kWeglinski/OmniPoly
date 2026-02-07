@@ -4,7 +4,8 @@ import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { addWord, lookupWord } from "./server/words.js";
+import { addWord } from "./server/words.js";
+import { filterResult } from "./src/languagecheck/filterHelper.js";
 
 const dirname = new URL(".", import.meta.url).pathname;
 
@@ -186,37 +187,15 @@ app.post("/api/ollama/generate", (req, res) => {
   );
 });
 
-app.post("/api/languagetool/check", (req, res) => {
-  const filter = (result) => {
-    const filtered = {
-      ...result,
-      matches: result.matches
-        .map((match) => {
-          if (match.rule.category.id === "TYPOS") {
-            const exists = lookupWord(
-              match.context.text.substr(
-                match.context.offset,
-                match.context.length
-              )
-            );
-            if (exists) {
-              return false;
-            } else {
-              return match;
-            }
-          }
-        })
-        .filter((elem) => elem),
-    };
-    return filtered;
-  };
+app.post("/api/languagetool/check", async (req, res) => {
+  // If dictionary is disabled, use a filter that keeps all matches (no dictionary filtering)
+  const filter = DISABLE_DICTIONARY ? (data) => data : (data) => filterResult(data, true);
 
-  const targetFilter = DISABLE_DICTIONARY ? filter : false;
   handleFormDataPost(
     `${LANGUAGE_TOOL}/v2/check`,
     req,
     res,
-    targetFilter,
+    filter,
     LANGUAGE_TOOL_PICKY
       ? {
           level: "picky",
@@ -230,9 +209,17 @@ app.post("/api/languagetool/add", (req, res) => {
     res.status(403).send();
     return;
   }
+  
+  // Validate input
+  const word = req.body.word;
+  if (typeof word !== "string" || word.length === 0 || word.length > 50) {
+    res.status(400).send("Invalid word");
+    return;
+  }
+  
   try {
-    addWord(`${req.body.word}`.toLowerCase());
-    console.log("added:", `${req.body.word}`.toLowerCase());
+    addWord(word.toLowerCase());
+    console.log("added:", word.toLowerCase());
     res.status(201).send();
   } catch (e) {
     console.log(e);

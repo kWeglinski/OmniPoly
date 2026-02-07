@@ -1,3 +1,8 @@
+### 0.14.4
+
+- Fix: when `DISABLE_DICTIONARY=true` languagetool was not returning any response.
+- Fix: recreated sync between input fields between tabs which was lost during zustand migration.
+
 ### 0.14.3
 
 - Fix: during the creation of improved fix tooltip I've introduced a bug that completely broke position where text is fixed. This is fixed now. 
