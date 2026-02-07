@@ -5,7 +5,7 @@ import path from "path";
 import bodyParser from "body-parser";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { addWord } from "./server/words.js";
-import { filterResult } from "./filterHelper.js";
+import { filterResult } from "./server/filterHelper.js";
 
 const dirname = new URL(".", import.meta.url).pathname;
 

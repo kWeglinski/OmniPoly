@@ -1,4 +1,4 @@
-import { lookupWord } from "./server/words.js";
+import { lookupWord } from "./words.js";
 
 /**
  * Filters a LanguageTool API response.

@@ -1,5 +1,5 @@
  // @ts-expect-error missing type declarations for filterHelper
-import { filterResult } from "../../../filterHelper";
+import { filterResult } from "../../../server/filterHelper";
 // Mock the lookupWord function used inside filterHelper
 jest.mock("../../../server/words.js", () => ({
   lookupWord: jest.fn(),
