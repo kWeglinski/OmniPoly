@@ -1,16 +1,17 @@
  // @ts-expect-error missing type declarations for filterHelper
 import { filterResult } from "../filterHelper";
-  const { lookupWord } = require("../../../../server/words.js");
+// Mock the lookupWord function used inside filterHelper
+jest.mock("../../../server/words.js", () => ({
+  lookupWord: jest.fn(),
+}));
+
  
-  // Mock the lookupWord function used inside filterHelper
-  jest.mock("../../../../server/words.js", () => ({
-    lookupWord: jest.fn(),
-  }));
+const { lookupWord } = require("../../../server/words.js");
 
 describe("filterResult", () => {
   beforeEach(() => {
     // Reset mock calls and implementations before each test
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     (lookupWord as unknown as jest.Mock).mockReset();
   });
 
@@ -30,7 +31,7 @@ describe("filterResult", () => {
 
   it("removes typo matches that exist in the custom dictionary", () => {
     // Simulate a word that is present in the custom dictionary
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     (lookupWord as unknown as jest.Mock).mockReturnValueOnce(true);
 
     const input = {
@@ -56,7 +57,7 @@ describe("filterResult", () => {
   });
 
   it("keeps typo matches when the word is not in the custom dictionary", () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     (lookupWord as unknown as jest.Mock).mockReturnValueOnce(false);
 
     const input = {
