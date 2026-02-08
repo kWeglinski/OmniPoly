@@ -1,3 +1,7 @@
+### 0.15.0
+
+- Feat: Optional use of Harper.js introduced. Simply set in .env `HARPER=true` 
+
 ### 0.14.4
 
 - Fix: when `DISABLE_DICTIONARY=true` languagetool was not returning any response.
