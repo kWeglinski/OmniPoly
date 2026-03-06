@@ -13,7 +13,9 @@ export const useInitialiseSystemStatus = () => {
           harper: data.HARPER,
           ollama: data.OLLAMA,
           theme: data.THEME,
-          disableDictionary: data.DISABLE_DICTIONARY
+          disableDictionary: data.DISABLE_DICTIONARY,
+          defaultTab: data.DEFAULT_TAB,
+          defaultTargetLanguage: data.DEFAULT_TARGET_LANGUAGE,
         });
       });
   }, []);
@@ -26,6 +28,8 @@ export type SystemStatus = {
   harper: boolean;
   ollama: boolean;
   theme:  "dark" | "light" | "pole";
+  defaultTab: string;
+  defaultTargetLanguage: string;
 };
 
 export const useSystemStatus = create(() => ({
@@ -36,4 +40,6 @@ export const useSystemStatus = create(() => ({
   ollama: false,
   theme: "dark" as SystemStatus["theme"],
   disableDictionary: false,
+  defaultTab: "",
+  defaultTargetLanguage: "",
 }));

@@ -1,3 +1,10 @@
+### 0.16.0
+
+- Feat: Added `DEFAULT_TAB` env variable to set default tab on load (`translate`, `language-check`, or `harper`). Takes precedence over localStorage when set.
+- Feat: Added `DEFAULT_TARGET_LANGUAGE` env variable to set default translation target language (ISO 639 code)
+- Chore: Updated package name from `sth-libretranslate` to `omnipoly`
+- Test: Added tests for new default settings features (19 new tests)
+
 ### 0.15.0
 
 - Feat: Optional use of Harper.js introduced. Simply set in .env `HARPER=true` 
