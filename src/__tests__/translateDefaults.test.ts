@@ -1,4 +1,4 @@
-const localStorageMock = (function() {
+const translateLsMock = (function() {
   let store: { [key: string]: string } = {};
 
   return {
@@ -14,7 +14,7 @@ const localStorageMock = (function() {
   };
 })();
 
-Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+Object.defineProperty(global, 'localStorage', { value: translateLsMock });
 
 type Lang = {
   name: string;
@@ -50,7 +50,7 @@ describe('getDefaultTargetLanguage', () => {
   ];
 
   beforeEach(() => {
-    localStorageMock.clear();
+    translateLsMock.clear();
   });
 
   describe('existing target precedence', () => {
