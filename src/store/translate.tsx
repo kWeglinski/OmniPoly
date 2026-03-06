@@ -9,6 +9,7 @@ import { History, Lang, LangChoice } from "../translate/types";
 import { useEffect } from "react";
 import { API } from "../translate/API";
 import { useShared, setQuestion } from "./shared";
+import { useSystemStatus } from "./status";
 
 export const useInitialiseTranslate = () => {
   useEffect(() => {
@@ -16,9 +17,23 @@ export const useInitialiseTranslate = () => {
     API()
       .getLanguages()
       .then((data) => {
+        const defaultTargetLang = useSystemStatus.getState().defaultTargetLanguage;
+        const existingTarget = state.target;
+        let targetLang = data[0];
+        
+        if (existingTarget && existingTarget.code) {
+          targetLang = existingTarget;
+        } else if (defaultTargetLang) {
+          const found = data.find((lang: Lang) => lang.code === defaultTargetLang);
+          if (found) {
+            targetLang = found;
+            localStorage.setItem("target", JSON.stringify(found));
+          }
+        }
+        
         const newState = {
           ...(!state.source ? { source: data[0] } : {}),
-          ...(!state.target ? { target: data[0] } : {}),
+          target: targetLang,
           languages: [...data, AUTOMATIC],
         };
         useTranslate.setState(newState);

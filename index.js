@@ -31,6 +31,7 @@ const LIBRETRANSLATE = process.env.LIBRETRANSLATE;
 const OLLAMA = process.env.OLLAMA;
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL;
 const THEME = process.env.THEME;
+const HARPER = process.env.HARPER;
 const DEBUG = process.env.DEBUG;
 const LIBRETRANSLATE_API_KEY = process.env.LIBRETRANSLATE_API_KEY;
 const LIBRETRANSLATE_LANGUAGES = getLanguages(
@@ -40,6 +41,8 @@ const LANGUAGE_TOOL_LANGUAGES = getLanguages(
   process.env.LANGUAGE_TOOL_LANGUAGES
 );
 const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === "true";
+const DEFAULT_TAB = process.env.DEFAULT_TAB;
+const DEFAULT_TARGET_LANGUAGE = process.env.DEFAULT_TARGET_LANGUAGE;
 
 const maskString = (str) => {
   if (!str || str.length <= 3) {
@@ -62,6 +65,8 @@ API_KEY: ${maskString(LIBRETRANSLATE_API_KEY)} // masked
 LANGUAGE_TOOL_LANGUAGES: ${JSON.stringify(LANGUAGE_TOOL_LANGUAGES)}
 LIBRETRANSLATE_LANGUAGES: ${JSON.stringify(LIBRETRANSLATE_LANGUAGES)}
 DICTIONARY_DISABLED: ${!!DISABLE_DICTIONARY}
+DEFAULT_TAB: ${DEFAULT_TAB}
+DEFAULT_TARGET_LANGUAGE: ${DEFAULT_TARGET_LANGUAGE}
 DEV_MODE: ${!!DEV}
 DEBUG_MODE: ${!!DEBUG} 
 ========================
@@ -151,13 +156,18 @@ const handleFormDataPost = (url, req, res, filter, additionalData) => {
 };
 
 app.get("/api/status", (req, res) => {
+  const HARPER_ENABLED = HARPER && HARPER.toLowerCase() === 'true';
+  
   res.send({
     LANGUAGE_TOOL,
     LIBRETRANSLATE,
     OLLAMA,
     OLLAMA_MODEL,
     THEME,
-    DISABLE_DICTIONARY,
+    HARPER: HARPER_ENABLED,
+    DISABLE_DICTIONARY: !!DISABLE_DICTIONARY,
+    DEFAULT_TAB,
+    DEFAULT_TARGET_LANGUAGE,
   });
 });
 
@@ -237,6 +247,126 @@ app.get("/api/languagetool/languages", (req, res) => {
     );
   };
   handleProxyGET(`${LANGUAGE_TOOL}/v2/languages`, res, filter);
+});
+
+// Harper endpoints
+app.post("/api/harper/check", async (req, res) => {
+  if (!HARPER || HARPER.toLowerCase() !== 'true') {
+    res.status(503).send("Harper is not enabled");
+    return;
+  }
+
+  try {
+    const harper = await import('harper.js');
+    
+    // Determine dialect based on language code
+    const langCode = req.body.language || 'en-US';
+    let dialect;
+    
+    if (langCode.includes('en-GB') || langCode === 'en-UK') {
+      dialect = harper.Dialect.British;
+    } else if (langCode.includes('en-CA')) {
+      dialect = harper.Dialect.Canadian;
+    } else if (langCode.includes('en-AU')) {
+      dialect = harper.Dialect.Australian;
+    } else {
+      dialect = harper.Dialect.American;
+    }
+
+    const linter = new harper.LocalLinter({
+      binary: harper.binary,
+      dialect: dialect,
+    });
+
+    const text = req.body.text;
+    const lints = await linter.lint(text);
+
+    // Convert Harper format to match LanguageTool response format
+      const matches = lints.map((lint) => {
+        // Get the lint category/kind for the rule ID
+        const lintKind = lint.lint_kind_pretty() || 'unknown';
+        
+        return {
+          message: lint.message(),
+          shortMessage: lint.message().split(':')[0] || lint.message(),
+          replacements: Array.from({ length: lint.suggestion_count() }, (_, i) => ({
+            value: lint.suggestions()[i]?.get_replacement_text() || '',
+          })),
+          offset: lint.span().start,
+          length: lint.span().end - lint.span().start,
+          context: {
+            text: text.substring(
+              Math.max(0, lint.span().start - 50),
+              Math.min(text.length, lint.span().end + 50)
+            ),
+            offset: 50,
+            length: lint.span().end - lint.span().start,
+          },
+          sentence: text,
+          rule: {
+            id: `harper_${lintKind.replace(/\s+/g, '_')}`,
+            subId: '',
+            sourceFile: '',
+            description: lint.message(),
+            issueType: 'grammar',
+            category: {
+              id: 'harper',
+              name: 'Harper Grammar Check',
+            },
+          },
+          type: {
+            typeName: 'Grammar',
+          },
+        };
+      });
+
+    res.send({
+      software: {
+        name: 'Harper',
+        version: '1.6.0',
+        buildDate: new Date().toISOString(),
+        apiVersion: 1,
+        premium: false,
+        premiumHint: '',
+        status: 'ok',
+      },
+      warnings: {},
+      language: {
+        name: langCode.includes('en-GB') ? 'English (UK)' : 
+               langCode.includes('en-CA') ? 'English (CA)' :
+               langCode.includes('en-AU') ? 'English (AU)' : 'English (US)',
+        code: langCode,
+        detectedLanguages: [{ language: langCode, rate: 1.0 }],
+      },
+      matches: matches,
+      sentenceRanges: [[0, text.length]],
+      extendedSentenceRanges: [{
+        from: 0,
+        to: text.length,
+        detectedLanguages: [{ language: langCode, rate: 1.0 }],
+      }],
+    });
+  } catch (error) {
+    console.error("[HARPER ERROR]", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.get("/api/harper/languages", (req, res) => {
+  if (!HARPER || HARPER.toLowerCase() !== 'true') {
+    res.status(503).send("Harper is not enabled");
+    return;
+  }
+
+  // Harper supports these dialects
+  const languages = [
+    { name: 'English (US)', code: 'en-US', longCode: 'en-US' },
+    { name: 'English (UK)', code: 'en-GB', longCode: 'en-GB' },
+    { name: 'English (CA)', code: 'en-CA', longCode: 'en-CA' },
+    { name: 'English (AU)', code: 'en-AU', longCode: 'en-AU' },
+  ];
+
+  res.json(languages);
 });
 
 if (DEV) {

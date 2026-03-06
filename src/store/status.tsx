@@ -10,9 +10,12 @@ export const useInitialiseSystemStatus = () => {
           libreTranslate: data.LIBRETRANSLATE,
           libreTranslateAPIKey: data.LIBRETRANSLATE_API_KEY,
           languageTool: data.LANGUAGE_TOOL,
+          harper: data.HARPER,
           ollama: data.OLLAMA,
           theme: data.THEME,
-          disableDictionary: data.DISABLE_DICTIONARY
+          disableDictionary: data.DISABLE_DICTIONARY,
+          defaultTab: data.DEFAULT_TAB,
+          defaultTargetLanguage: data.DEFAULT_TARGET_LANGUAGE,
         });
       });
   }, []);
@@ -22,15 +25,21 @@ export type SystemStatus = {
   libreTranslate: boolean;
   libreTranslateAPIKey: string;
   languageTool: boolean;
+  harper: boolean;
   ollama: boolean;
   theme:  "dark" | "light" | "pole";
+  defaultTab: string;
+  defaultTargetLanguage: string;
 };
 
 export const useSystemStatus = create(() => ({
   libreTranslate: false,
   libreTranslateAPIKey: "",
   languageTool: false,
+  harper: false,
   ollama: false,
   theme: "dark" as SystemStatus["theme"],
   disableDictionary: false,
+  defaultTab: "",
+  defaultTargetLanguage: "",
 }));
