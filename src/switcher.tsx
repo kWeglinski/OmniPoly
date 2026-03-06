@@ -37,41 +37,48 @@ function a11yProps(index: number) {
   };
 }
 
-const ToolMap: { [key: number]: string } = {
+const ToolMap: { [key: string]: number } = {
+  translate: 0,
+  "language-check": 1,
+  harper: 2,
+};
+
+const ToolIndexToKey: { [key: number]: string } = {
   0: "libreTranslate",
   1: "languageTool",
   2: "harper",
 };
 
 const getInitTab = (
-  browserTab: number,
+  defaultTab: string,
   tools: Record<string, boolean>
 ) => {
-  const tool = ToolMap[browserTab];
-  // If tab is out of range or tool is not available, find first available
-  if (browserTab < 0 || browserTab > 2 || !tool || !tools[tool]) {
-    // Find first available tool in order: libreTranslate, languageTool, harper
-    if (tools.libreTranslate) {
-      localStorage.setItem("tab", "0");
-      return 0;
-    } else if (tools.languageTool) {
-      localStorage.setItem("tab", "1");
-      return 1;
-    } else if (tools.harper) {
-      localStorage.setItem("tab", "2");
-      return 2;
-    }
-    // Fallback to 0 if no tools available
+  if (defaultTab && ToolMap[defaultTab] !== undefined && tools[ToolIndexToKey[ToolMap[defaultTab]]]) {
+    return ToolMap[defaultTab];
+  }
+
+  const browserTab = parseInt(localStorage.getItem("tab") ?? "-1");
+  if (browserTab >= 0 && browserTab <= 2 && tools[ToolIndexToKey[browserTab]]) {
+    return browserTab;
+  }
+
+  if (tools.libreTranslate) {
     localStorage.setItem("tab", "0");
     return 0;
+  } else if (tools.languageTool) {
+    localStorage.setItem("tab", "1");
+    return 1;
+  } else if (tools.harper) {
+    localStorage.setItem("tab", "2");
+    return 2;
   }
-  return browserTab;
+  localStorage.setItem("tab", "0");
+  return 0;
 };
 
 export const Switcher = () => {
-  const { libreTranslate, languageTool, harper } = useSystemStatus();
-  const browserTab = parseInt(localStorage.getItem("tab") ?? "-1");
-  const initTab = getInitTab(browserTab, { libreTranslate, languageTool, harper });
+  const { libreTranslate, languageTool, harper, defaultTab } = useSystemStatus();
+  const initTab = getInitTab(defaultTab, { libreTranslate, languageTool, harper });
 
   const [tab, setTab] = useState(initTab);
   const tabSetter = (val: number) => {

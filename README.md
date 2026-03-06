@@ -51,12 +51,16 @@ services:
       OLLAMA_MODEL: model_name
       # pick one of: 'pole' | 'light' | 'dark' 
       THEME: 'dark'
-      # To limit language options for translations provide an array of ISO 639 language codes
-      LIBRETRANSLATE_LANGUAGES: ["pl","en"] # optional
-      # To limit language options for text check provide an array of long tags (ISO 639/ISO-3166) also known as language-Region code.
-      LANGUAGE_TOOL_LANGUAGES: ["pl-PL","en-GB"] # optional
-      # To disable "add word" to dicationary
+      # To limit language options for translations provide a JSON array of ISO 639 language codes (must be quoted in docker-compose)
+      LIBRETRANSLATE_LANGUAGES: '["pl","en"]' # optional
+      # To limit language options for text check provide a JSON array of long tags (ISO 639/ISO-3166) also known as language-Region code.
+      LANGUAGE_TOOL_LANGUAGES: '["pl-PL","en-GB"]' # optional
+      # To disable "add word" to dictionary
       DISABLE_DICTIONARY: true # optional
+      # Default tab on load: 'translate', 'language-check', or 'harper' (takes precedence over user preference)
+      DEFAULT_TAB: 'translate' # optional
+      # Default target language for translation (ISO 639 code)
+      DEFAULT_TARGET_LANGUAGE: 'es' # optional
       DEBUG: false # set to true to log text sent to tools and it's raw responses
     ports:
       - 80:80
