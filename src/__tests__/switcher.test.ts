@@ -1,4 +1,4 @@
-const localStorageMock = (function() {
+const switcherLsMock = (function() {
   let store: { [key: string]: string } = {};
 
   return {
@@ -14,7 +14,7 @@ const localStorageMock = (function() {
   };
 })();
 
-Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+Object.defineProperty(global, 'localStorage', { value: switcherLsMock });
 
 const ToolMap: { [key: string]: number } = {
   translate: 0,
@@ -57,13 +57,13 @@ const getInitTab = (
 
 describe('getInitTab', () => {
   beforeEach(() => {
-    localStorageMock.clear();
+    switcherLsMock.clear();
   });
 
   describe('DEFAULT_TAB precedence', () => {
     it('should return translate tab when DEFAULT_TAB is set to translate', () => {
       const tools = { libreTranslate: true, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '1');
+      switcherLsMock.setItem('tab', '1');
 
       const result = getInitTab('translate', tools);
 
@@ -72,7 +72,7 @@ describe('getInitTab', () => {
 
     it('should return language-check tab when DEFAULT_TAB is set to language-check', () => {
       const tools = { libreTranslate: true, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '0');
+      switcherLsMock.setItem('tab', '0');
 
       const result = getInitTab('language-check', tools);
 
@@ -81,7 +81,7 @@ describe('getInitTab', () => {
 
     it('should return harper tab when DEFAULT_TAB is set to harper', () => {
       const tools = { libreTranslate: true, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '0');
+      switcherLsMock.setItem('tab', '0');
 
       const result = getInitTab('harper', tools);
 
@@ -90,7 +90,7 @@ describe('getInitTab', () => {
 
     it('should ignore DEFAULT_TAB if tool is not available', () => {
       const tools = { libreTranslate: true, languageTool: false, harper: false };
-      localStorageMock.setItem('tab', '0');
+      switcherLsMock.setItem('tab', '0');
 
       const result = getInitTab('language-check', tools);
 
@@ -101,7 +101,7 @@ describe('getInitTab', () => {
   describe('localStorage fallback', () => {
     it('should use localStorage when no DEFAULT_TAB set', () => {
       const tools = { libreTranslate: true, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '1');
+      switcherLsMock.setItem('tab', '1');
 
       const result = getInitTab('', tools);
 
@@ -110,7 +110,7 @@ describe('getInitTab', () => {
 
     it('should use localStorage when DEFAULT_TAB is undefined', () => {
       const tools = { libreTranslate: true, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '2');
+      switcherLsMock.setItem('tab', '2');
 
       const result = getInitTab(undefined as unknown as string, tools);
 
@@ -155,7 +155,7 @@ describe('getInitTab', () => {
   describe('invalid localStorage handling', () => {
     it('should fallback to first available when localStorage has invalid tab', () => {
       const tools = { libreTranslate: true, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '99');
+      switcherLsMock.setItem('tab', '99');
 
       const result = getInitTab('', tools);
 
@@ -164,7 +164,7 @@ describe('getInitTab', () => {
 
     it('should fallback when localStorage tool is disabled', () => {
       const tools = { libreTranslate: false, languageTool: true, harper: true };
-      localStorageMock.setItem('tab', '0');
+      switcherLsMock.setItem('tab', '0');
 
       const result = getInitTab('', tools);
 
