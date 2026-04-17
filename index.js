@@ -3,9 +3,13 @@
 import express from "express";
 import path from "path";
 import bodyParser from "body-parser";
+import multer from "multer";
+import mammoth from "mammoth";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { addWord } from "./server/words.js";
 import { filterResult } from "./server/filterHelper.js";
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: parseInt(process.env.MAX_BODY_SIZE || '5mb', 10) * 1024 * 1024 } });
 
 const dirname = new URL(".", import.meta.url).pathname;
 
@@ -72,8 +76,10 @@ DEBUG_MODE: ${!!DEBUG}
 ========================
 `);
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+const MAX_BODY_SIZE = process.env.MAX_BODY_SIZE || '5mb';
+
+app.use(bodyParser.urlencoded({ extended: false, limit: MAX_BODY_SIZE }));
+app.use(bodyParser.json({ limit: MAX_BODY_SIZE }));
 
 const handleProxyGET = (url, res, filter) => {
   if (DEBUG) {
@@ -349,6 +355,21 @@ app.post("/api/harper/check", async (req, res) => {
   } catch (error) {
     console.error("[HARPER ERROR]", error);
     res.status(500).send("Internal server error");
+  }
+});
+
+app.post("/api/translate/docx", upload.single("file"), async (req, res) => {
+  if (!req.file) {
+    res.status(400).send("No file provided");
+    return;
+  }
+
+  try {
+    const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+    res.send({ text: result.value });
+  } catch (error) {
+    console.error("[DOCX ERROR]", error);
+    res.status(500).send("Failed to process DOCX file");
   }
 });
 

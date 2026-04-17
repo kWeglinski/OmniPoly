@@ -33,7 +33,22 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       };
       reader.readAsText(file);
     } else if (isBinaryFormat) {
-      snackActions.showSnack(`File format ${fileExtension} requires server-side processing`);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      snackActions.showSnack("Processing document...");
+      fetch("/api/translate/docx", { method: "POST", body: formData })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to process file");
+          return response.json();
+        })
+        .then((data) => {
+          actions.setQuestion(data.text);
+          snackActions.showSnack("File successfully read");
+        })
+        .catch(() => {
+          snackActions.showSnack("Failed to read file");
+        });
     } else {
       snackActions.showSnack("Unsupported file format");
     }
@@ -80,10 +95,7 @@ export const Source = ({
             title={
               <span style={{ textAlign: "center" }}>
                 Upload file. <br /> supported file types:
-                {allSupportedExtensions.map(ext => `.${ext}`).join(', ')}<br />
-                <span style={{ fontSize: '0.8em', color: '#666' }}>
-                  {supportedBinaryExtensions.map(ext => `.${ext}`).join(', ')} require server-side processing
-                </span>
+                {allSupportedExtensions.map(ext => `.${ext}`).join(', ')}
               </span>
             }
           >
