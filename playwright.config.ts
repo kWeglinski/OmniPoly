@@ -19,10 +19,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run build && npm run node',
+    command: 'npm run build && PORT=3000 npm run node',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     stdout: 'pipe',
+    env: { PORT: '3000' },
   },
 });
