@@ -44,6 +44,27 @@ const DISABLE_DICTIONARY = process.env.DISABLE_DICTIONARY === "true";
 const DEFAULT_TAB = process.env.DEFAULT_TAB;
 const DEFAULT_TARGET_LANGUAGE = process.env.DEFAULT_TARGET_LANGUAGE;
 
+const isServiceConfigured = (url) => {
+  if (!url) return false;
+  const placeholderPatterns = [
+    'your.',
+    'placeholder',
+    'example.',
+    'localhost',
+    'changeme',
+    'insert',
+    'replace',
+    'your.languagetool.instance',
+    'your.libretranslate.instance',
+    'your.ollama.instance',
+  ];
+  return !placeholderPatterns.some((p) => url.toLowerCase().includes(p));
+};
+
+const LANGUAGETOOL_CONFIGURED = isServiceConfigured(LANGUAGE_TOOL);
+const LIBRETRANSLATE_CONFIGURED = isServiceConfigured(LIBRETRANSLATE);
+const OLLAMA_CONFIGURED = isServiceConfigured(OLLAMA);
+
 const maskString = (str) => {
   if (!str || str.length <= 3) {
     return str;
@@ -172,6 +193,10 @@ app.get("/api/status", (req, res) => {
 });
 
 app.get("/api/libretranslate/languages", (req, res) => {
+  if (!LIBRETRANSLATE_CONFIGURED) {
+    res.status(503).json({ error: "LibreTranslate service is not configured" });
+    return;
+  }
   const filter = (data) => {
     if (LIBRETRANSLATE_LANGUAGES.length === 0) {
       return data;
@@ -182,6 +207,10 @@ app.get("/api/libretranslate/languages", (req, res) => {
 });
 
 app.post("/api/libretranslate/translate", (req, res) => {
+  if (!LIBRETRANSLATE_CONFIGURED) {
+    res.status(503).json({ error: "LibreTranslate service is not configured" });
+    return;
+  }
   handleProxyPost(
     `${LIBRETRANSLATE}/translate`,
     { ...req, body: { ...req.body, api_key: LIBRETRANSLATE_API_KEY ?? "" } },
@@ -190,6 +219,10 @@ app.post("/api/libretranslate/translate", (req, res) => {
 });
 
 app.post("/api/ollama/generate", (req, res) => {
+  if (!OLLAMA_CONFIGURED) {
+    res.status(503).json({ error: "Ollama service is not configured" });
+    return;
+  }
   handleProxyPost(
     `${OLLAMA}/api/generate`,
     { ...req, body: { ...req.body, model: OLLAMA_MODEL } },
@@ -198,6 +231,10 @@ app.post("/api/ollama/generate", (req, res) => {
 });
 
 app.post("/api/languagetool/check", async (req, res) => {
+  if (!LANGUAGETOOL_CONFIGURED) {
+    res.status(503).json({ error: "LanguageTool service is not configured" });
+    return;
+  }
   // If dictionary is disabled, use a filter that keeps all matches (no dictionary filtering)
   const filter = DISABLE_DICTIONARY ? (data) => data : (data) => filterResult(data, true);
 
@@ -238,6 +275,10 @@ app.post("/api/languagetool/add", (req, res) => {
 });
 
 app.get("/api/languagetool/languages", (req, res) => {
+  if (!LANGUAGETOOL_CONFIGURED) {
+    res.status(503).json({ error: "LanguageTool service is not configured" });
+    return;
+  }
   const filter = (data) => {
     if (LANGUAGE_TOOL_LANGUAGES.length === 0) {
       return data;
