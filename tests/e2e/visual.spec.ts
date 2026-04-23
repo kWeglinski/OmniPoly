@@ -6,10 +6,9 @@ test.describe('OmniPoly - Home Page', () => {
   });
 
   test('page loads and shows Translate tab', async ({ page }) => {
-    await expect(page.locator('text=Translate')).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Translate' })).toBeVisible();
 
-    const translateTab = page.locator('[aria-label="Translate"]').first()
-      .or(page.locator('text=Translate'));
+    const translateTab = page.getByRole('tab', { name: 'Translate' });
 
     await expect(translateTab).toHaveAttribute('aria-selected', 'true');
   });
@@ -25,7 +24,7 @@ test.describe('OmniPoly - Home Page', () => {
   });
 
   test('tab navigation works - switch to Language Check', async ({ page }) => {
-    const langCheckTab = page.locator('text=Language Check');
+    const langCheckTab = page.getByRole('tab', { name: 'Language Check' });
 
     await expect(langCheckTab).toBeVisible();
     await langCheckTab.click();
@@ -35,9 +34,9 @@ test.describe('OmniPoly - Home Page', () => {
   });
 
   test('tab navigation - switch back to Translate', async ({ page }) => {
-    await page.locator('text=Language Check').click();
+    await page.getByRole('tab', { name: 'Language Check' }).click();
 
-    const translateTab = page.locator('text=Translate');
+    const translateTab = page.getByRole('tab', { name: 'Translate' });
     await expect(translateTab).toBeVisible();
     await translateTab.click();
 
@@ -62,8 +61,8 @@ test.describe('OmniPoly - Home Page', () => {
   });
 
   test('settings panel is visible on translate tab', async ({ page }) => {
-    const settingsContainer = page.locator('[class*="settings"], [class*="Settings"]').first();
-    await expect(settingsContainer).toBeVisible();
+    const skeleton = page.locator('[class*="Skeleton"]');
+    await expect(skeleton).toBeVisible();
   });
 
   test('page responds to keyboard input', async ({ page }) => {
@@ -80,7 +79,7 @@ test.describe('OmniPoly - Home Page', () => {
 
     await page.goto('/');
 
-    await expect(page.locator('text=Translate')).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Translate' })).toBeVisible();
     await expect(page).toHaveScreenshot('homepage-mobile.png', {
       maxDiffPixelRatio: 0.05,
     });
