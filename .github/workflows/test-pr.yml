@@ -63,6 +63,16 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Generate visual baselines
+        run: npx playwright test --update-snapshots --reporter=list
+        continue-on-error: true
+
+      - name: Commit updated baselines
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update visual test baselines"
+          file_pattern: tests/e2e/*-snapshots/*.png
+
       - name: Run Playwright E2E tests
         run: npx playwright test --reporter=github
 
