@@ -37,7 +37,8 @@ export const useInitialiseTranslate = () => {
           languages: [...data, AUTOMATIC],
         };
         useTranslate.setState(newState);
-      });
+      })
+      .catch(() => {});
   }, []);
 };
 

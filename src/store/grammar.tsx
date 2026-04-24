@@ -10,8 +10,8 @@ export const useInitialiseGrammar = () => {
       .getLangs()
       .then((data) => {
         useGrammar.setState({ languages: data });
-        //setstate
-      });
+      })
+      .catch(() => {});
   }, []);
 };
 

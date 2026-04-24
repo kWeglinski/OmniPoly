@@ -17,7 +17,8 @@ export const useInitialiseSystemStatus = () => {
           defaultTab: data.DEFAULT_TAB,
           defaultTargetLanguage: data.DEFAULT_TARGET_LANGUAGE,
         });
-      });
+      })
+      .catch(() => {});
   }, []);
 };
 

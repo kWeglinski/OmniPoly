@@ -11,9 +11,7 @@ export const useInitialiseHarper = () => {
       .then((data) => {
         useHarper.setState({ languages: data });
       })
-      .catch((e) => {
-        console.error("[HARPER] Failed to load languages:", e);
-      });
+      .catch(() => {});
   }, []);
 };
 
