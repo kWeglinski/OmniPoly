@@ -10,10 +10,10 @@ const PORT = 9998;
 let serverProcess;
 
 beforeAll((done) => {
-  process.env.LANGUAGE_TOOL = 'http://localhost:8001';
-  process.env.LIBRETRANSLATE = 'http://localhost:8002';
+  process.env.LANGUAGE_TOOL = 'http://127.0.0.1:8001';
+  process.env.LIBRETRANSLATE = 'http://127.0.0.1:8002';
   process.env.LIBRETRANSLATE_API_KEY = 'test-api-key';
-  process.env.OLLAMA = 'http://localhost:8003';
+  process.env.OLLAMA = 'http://127.0.0.1:8003';
   process.env.OLLAMA_MODEL = 'test-model';
   process.env.THEME = 'dark';
   process.env.HARPER = 'false';
@@ -107,7 +107,7 @@ describe('Server Integration Tests', () => {
   });
 
   describe('POST /api/libretranslate/translate', () => {
-    it('should proxy translation request to LibreTranslate service (connection refused)', async () => {
+    it('should return 500 when LibreTranslate service is unreachable', async () => {
       const res = await httpPost('/api/libretranslate/translate', {
         q: 'Hello world',
         source: 'en',
@@ -116,6 +116,44 @@ describe('Server Integration Tests', () => {
         alternatives: 3,
         api_key: '',
       });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('GET /api/libretranslate/languages', () => {
+    it('should return 500 when LibreTranslate service is unreachable', async () => {
+      const res = await httpGet('/api/libretranslate/languages');
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /api/ollama/generate', () => {
+    it('should return 500 when Ollama service is unreachable', async () => {
+      const res = await httpPost('/api/ollama/generate', {
+        prompt: 'Hello',
+        system: 'You are a helpful assistant',
+      });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('POST /api/languagetool/check', () => {
+    it('should return 500 when LanguageTool service is unreachable', async () => {
+      const res = await httpPost('/api/languagetool/check', {
+        text: 'Hello world',
+        language: 'en-US',
+      });
+
+      expect(res.status).toBe(500);
+    });
+  });
+
+  describe('GET /api/languagetool/languages', () => {
+    it('should return 500 when LanguageTool service is unreachable', async () => {
+      const res = await httpGet('/api/languagetool/languages');
 
       expect(res.status).toBe(500);
     });
