@@ -1,3 +1,7 @@
+## [Unreleased]
+
+- Feat: added dark/light theme toggle button in top bar next to tabs; choice persists in localStorage and overrides server default
+
 ### 0.16.0
 
 - Feat: Added `DEFAULT_TAB` env variable to set default tab on load (`translate`, `language-check`, or `harper`). Takes precedence over localStorage when set.

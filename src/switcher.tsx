@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Translate from "./translate/App.tsx";
 import LangCheck from "./languagecheck/App.tsx";
 import HarperCheck from "./harper/App.tsx";
+import { ThemeToggle } from "./common/ThemeToggle";
 import { useSystemStatus } from "./store/status.tsx";
 
 interface CustomTabPanelProps {
@@ -88,9 +89,17 @@ export const Switcher = () => {
 
   return (
     <>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <Box
+        sx={{
+          borderBottom: 1,
+          borderColor: "divider",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <Tabs
           centered
+          sx={{ flex: 1 }}
           value={tab}
           onChange={(_, val) => tabSetter(val)}
           aria-label="basic tabs example"
@@ -105,6 +114,7 @@ export const Switcher = () => {
             <Tab value={2} label="Harper Check" {...a11yProps(2)} />
           )}
         </Tabs>
+        <ThemeToggle />
       </Box>
       <CustomTabPanel value={tab} index={0}>
         <Translate />

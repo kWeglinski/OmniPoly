@@ -1,6 +1,16 @@
 import { useEffect } from "react";
 import { create } from "zustand";
 
+const THEME_KEY = "theme";
+
+// saved client choice wins over server default
+const getSavedTheme = (fallback: SystemStatus["theme"]) => {
+  const saved = localStorage.getItem(THEME_KEY);
+  return saved === "dark" || saved === "light" || saved === "pole"
+    ? saved
+    : fallback;
+};
+
 export const useInitialiseSystemStatus = () => {
   useEffect(() => {
     fetch("/api/status")
@@ -12,7 +22,7 @@ export const useInitialiseSystemStatus = () => {
           languageTool: data.LANGUAGE_TOOL,
           harper: data.HARPER,
           ollama: data.OLLAMA,
-          theme: data.THEME,
+          theme: getSavedTheme(data.THEME),
           disableDictionary: data.DISABLE_DICTIONARY,
           defaultTab: data.DEFAULT_TAB,
           defaultTargetLanguage: data.DEFAULT_TARGET_LANGUAGE,
@@ -44,3 +54,10 @@ export const useSystemStatus = create(() => ({
   defaultTab: "",
   defaultTargetLanguage: "",
 }));
+
+export const actions = {
+  setTheme: (theme: SystemStatus["theme"]) => {
+    localStorage.setItem(THEME_KEY, theme);
+    useSystemStatus.setState({ theme });
+  },
+};
